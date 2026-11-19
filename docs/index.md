@@ -1,49 +1,45 @@
-# Savdo-E — Hujjatlar Indeksi
+# Documentation Index
 
-Loyihaning barcha texnik hujjatlari shu papkada joylashgan.
-
----
-
-## Umumiy Hujjatlar
-
-| Fayl | Tavsif |
-|------|--------|
-| [api.md](./api.md) | API endpointlar va request/response formatlari |
-| [architecture.md](./architecture.md) | Tizim arxitekturasi, DB schema, komponent tuzilishi |
-| [deployment.md](./deployment.md) | Deploy qilish yo'riqnomasi (Railway, Vercel, Atlas) |
-| [contributing.md](./contributing.md) | Hissa qo'shish qoidalari va workflow |
+All current English documentation for TradeS is linked from this page. Older files in `docs/` are kept as historical notes and may still mention the former project name or earlier infrastructure choices.
 
 ---
 
-## Admin Panel Hujjatlari (`admin/`)
+## Current documentation
 
-| Fayl | Tavsif |
-|------|--------|
-| [admin/README.md](./admin/README.md) | Admin panel haqida umumiy ma'lumot |
-| [admin/setup.md](./admin/setup.md) | Sozlash va ishga tushirish yo'riqnomasi |
-| [admin/modules.md](./admin/modules.md) | Barcha modullar va sahifalar tavsifi |
-| [admin/improvements.md](./admin/improvements.md) | Rejalashtirilgan yaxshilanishlar va roadmap |
-
----
-
-## Xato Hisobotlari
-
-| Fayl | Tavsif |
-|------|--------|
-| [backend-bugs.md](./backend-bugs.md) | Backend xatolari hisoboti (barcha FIXED) |
-| [web-bugs.md](./web-bugs.md) | Web platformasi xatolari hisoboti |
-| [testing.md](./testing.md) | Postman API test natijalari (11/12 o'tdi) |
+| File | Description |
+|---|---|
+| [../README.md](../README.md) | Project overview, setup, API, architecture, roadmap |
+| [LAYOUTS.md](./LAYOUTS.md) | Every web, admin, and mobile screen/layout in English |
+| [REPO_AUDIT.md](./REPO_AUDIT.md) | GitHub repository audit: missing items, failing checks, open work |
 
 ---
 
-## Tezkor Havolalar
+## Technical documentation (historical)
 
-- **Backend:** `http://localhost:5002`
-- **Web:** `http://localhost:5173`
-- **Admin Panel:** `http://localhost:5174`
-- **API Docs:** [api.md](./api.md)
-- **Arxitektura:** [architecture.md](./architecture.md)
+| File | Description |
+|---|---|
+| [api.md](./api.md) | API endpoints and request/response formats |
+| [architecture.md](./architecture.md) | System architecture, data model, component structure |
+| [deployment.md](./deployment.md) | Deployment notes (older Railway/Vercel/Atlas instructions) |
+| [contributing.md](./contributing.md) | Contribution workflow |
+| [admin/README.md](./admin/README.md) | Admin panel overview |
+| [admin/setup.md](./admin/setup.md) | Admin panel setup |
+| [admin/modules.md](./admin/modules.md) | Admin modules and pages |
+| [admin/improvements.md](./admin/improvements.md) | Planned admin improvements |
+| [backend-bugs.md](./backend-bugs.md) | Historical backend bug report |
+| [web-bugs.md](./web-bugs.md) | Historical web bug report |
+| [testing.md](./testing.md) | Historical API test results |
 
 ---
 
-*Savdo-E — MDH Commerce Management Platform*
+## Quick links
+
+- Backend health: `http://localhost:5000/health`
+- API base URL: `http://localhost:5000/api/v1`
+- Web POS: `http://localhost:5173`
+- Admin panel: `http://localhost:5174`
+- Repository: https://github.com/gayratov993/TradeS
+
+---
+
+*TradeS — sales and professional POS management.*

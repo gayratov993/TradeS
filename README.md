@@ -1,103 +1,105 @@
-# TradeS — savdo va professional POS boshqaruv platformasi
+# TradeS — Sales and Professional POS Management Platform
 
-TradeS — O‘zbekiston va MDH bozori uchun mo‘ljallangan, oflayn birinchi (offline-first) savdo boshqaruv tizimi. Loyiha bitta monorepo ichida **backend API**, **veb POS**, **admin panel** va **Expo mobil ilova**ni birlashtiradi.
+TradeS is an offline-first sales management system built for the Uzbekistan and CIS retail market. One monorepo contains the **backend API**, **web POS**, **admin panel**, and **Expo mobile app**.
 
-Asosiy maqsad: kichik do‘kondan 10 filialgacha bo‘lgan bizneslar uchun mahsulot, savdo, hisobot, xodim, kassa va obuna boshqaruvini yagona tizimda ta’minlash.
+The goal is to give businesses from a single shop to 10 branches one system for products, sales, reports, staff, cash registers, and subscriptions.
 
 ---
 
-## 1. Hozirgi holat
+## 1. Current status
 
-| Soha | Holat |
+| Area | Status |
 |---|---|
-| Backend API | Ishlayapti: auth, products, sales, orders, reports, sync, AI, admin, audit, support, telegram |
-| Database | PostgreSQL + Prisma 6, migratsiyalar qo‘llanilgan |
-| subscription / tashkilot / do‘kon / kassa | Schema + migration + seed tayyor |
-| Veb POS | Ishlayapti: mahsulotlar, savdo, hisobotlar, oflayn sinxronizatsiya |
-| Admin panel | Ishlayapti: foydalanuvchilar, mahsulotlar, buyurtmalar, rollar, hisobotlar |
-| Mobil ilova | Ishlayapti: mahsulotlar, savdo, oflayn WatermelonDB, sync engine |
-| Telegram OTP | `@trades_otp_bot` orqali ishlaydi |
-| Ko‘p mahsulotli POS cart / chek / kassa smenasi | Roadmap bosqichida (schema tayyor) |
+| Backend API | Working: auth, products, sales, orders, reports, sync, AI, admin, audit, support, Telegram |
+| Database | PostgreSQL + Prisma 6, migrations applied |
+| Subscription / organization / store / register | Schema + migration + seed ready |
+| Web POS | Working: products, sales, reports, offline sync |
+| Admin panel | Working: users, products, orders, roles, reports |
+| Mobile app | Working: products, sales, offline WatermelonDB, sync engine |
+| Telegram OTP | Working through `@trades_otp_bot` |
+| Multi-item POS cart / receipt / cashier shift | On the roadmap (database schema is ready) |
 
-> Oxirgi muhim o‘zgarish: POS arxitekturasi uchun `Plan`, `Organization`, `Store`, `Register`, `SaleTransaction`, `Payment`, `RegisterShift`, `Return`, `StoreInventory` modellari qo‘shildi va bazaga qo‘llandi.
+> Latest major change: `Plan`, `Organization`, `Store`, `Register`, `SaleTransaction`, `Payment`, `RegisterShift`, `Return`, and `StoreInventory` models were added to the Prisma schema and applied to the database.
+
+See [docs/REPO_AUDIT.md](./docs/REPO_AUDIT.md) for the current GitHub repository audit, including known gaps and failing checks.
 
 ---
 
-## 2. Imkoniyatlar
+## 2. Features
 
-### Authentification
-- Telefon + Telegram OTP (bot orqali kod yuborish).
-- Email + parol va email OTP (dev rejimda `devCode` ko‘rinadi).
+### Authentication
+- Phone number + Telegram OTP (code sent by the bot).
+- Email + password and email OTP (the `devCode` is visible in development mode).
 - Google OAuth.
-- JWT access/refresh tokenlar, role-based access.
+- JWT access/refresh tokens and role-based access control.
 
-### Mahsulotlar
-- Global mahsulot katalogi: barcha foydalanuvchilar bir katalogdan foydalanadi.
-- `buyPrice` / `sellPrice` alohida saqlanadi; foyda avtomatik hisoblanadi.
-- Qoldiq `stock`, qo‘shimcha o‘lchov birligi `unit`, kategoriya, brend, rasm.
-- O‘chirilgan mahsulotlar oflayn klientlarga `deletedProductIds` bilan uzatiladi.
+### Products
+- Global product catalog: every user works from the same catalog.
+- Separate `buyPrice` / `sellPrice`; profit is calculated automatically.
+- Stock, additional unit of measure, category, brand, and image.
+- Deleted products are sent to offline clients through `deletedProductIds`.
 
-### Savdo
-- Tez savdo kiritish (veb va mobil).
-- Server tomonidan narx, mahsulot nomi va birlik qayta tekshiriladi — klient narxni soxtalashtira olmaydi.
-- Atomik qoldiq kamaytirish: `stock >= quantity` sharti bilan `updateMany`.
-- Oflayn savdolar `syncId` bilan idempotent yuboriladi; qayta yuborish takroriy savdo yaratmaydi.
-- Oflayn savdolarda vaqtinchalik manfiy qoldiq faqat `allowOffline` bilan ruxsat etiladi.
+### Sales
+- Fast sale entry in the web and mobile apps.
+- The server revalidates price, product name, and unit — clients cannot fake prices.
+- Atomic stock decrement with `stock >= quantity` using `updateMany`.
+- Offline sales are sent idempotently with `syncId`; retries do not create duplicates.
+- Temporary negative stock in offline sales is allowed only with `allowOffline`.
 
-### Hisobotlar
-- Dashboard: daromad, foyda, savdolar soni, mahsulot qoldiqlari.
-- Kunlik/oylik hisobotlar, top mahsulotlar.
-- Kam qoldiq hisoboti barcha tashkilotlar bo‘yicha filtrsiz ishlaydi.
+### Reports
+- Dashboard: revenue, profit, number of sales, product stock.
+- Daily/monthly reports and top products.
+- Low-stock report works globally without organization filters.
 
-### Oflayn sinxronizatsiya
-- Veb: IndexedDB (`offlineDB.js`) + `webSyncService`.
-- Mobil: WatermelonDB + `syncEngine`.
-- `/sync/push` va `/sync/pull`; `clientUpdatedAt` soniya yoki ISO datetime qabul qiladi.
-- Mahsulot pull global; savdo/hisobot ma’lumotlari ham global.
+### Offline synchronization
+- Web: IndexedDB (`offlineDB.js`) + `webSyncService`.
+- Mobile: WatermelonDB + `syncEngine`.
+- `/sync/push` and `/sync/pull`; `clientUpdatedAt` accepts seconds or ISO datetime.
+- Product pulls are global; sales and report data are global as well.
 
-### Admin va xavfsizlik
-- Super Admin / Admin / User rollari.
-- Audit loglar, rate limiting, Helmet, CORS whitelist.
-- Foydalanuvchi massivlariga qarshi Joi validatsiyasi.
-- Test foydalanuvchilari uchun muddatli tozalash mexanizmi bor.
+### Admin and security
+- Super Admin / Admin / User roles.
+- Audit logs, rate limiting, Helmet, CORS whitelist.
+- Joi validation against malformed user input.
+- Temporary cleanup mechanism for test users.
 
 ---
 
-## 3. Obuna tariflari
+## 3. Subscription plans
 
-`npm run seed:pos` bilan 3 ta tarif yaratiladi:
+`npm run seed:pos` creates three plans:
 
-| Tarif | Do‘kon | Har do‘konda kassa | Foydalanuvchi | Oylik narx |
+| Plan | Stores | Registers per store | Users | Monthly price |
 |---|---:|---:|---:|---:|
-| `BASIC` — Oddiy | 1 | 3 | 3 | 0 UZS |
-| `STANDARD` — O‘rta | 3 | 5 | 10 | 99 000 UZS |
-| `PRO` — Katta | 10 | 10 | 50 | 299 000 UZS |
+| `BASIC` | 1 | 3 | 3 | 0 UZS |
+| `STANDARD` | 3 | 5 | 10 | 99,000 UZS |
+| `PRO` | 10 | 10 | 50 | 299,000 UZS |
 
-Seed shuningdek quyidagilarni yaratadi:
-- `TradeS` tashkiloti (`slug: trades-main`),
-- `Asosiy do‘kon` (`MAIN-001`),
-- `Kassa 1`, `Kassa 2`, `Kassa 3`,
-- admin foydalanuvchini tashkilotga `OWNER` sifatida bog‘laydi,
-- barcha aktiv mahsulotlar uchun `StoreInventory` qoldiqlarini ko‘chiradi.
+The seed also creates:
+- the `TradeS` organization (`slug: trades-main`),
+- the main store (`MAIN-001`),
+- `Register 1`, `Register 2`, `Register 3`,
+- the admin user as `OWNER` of the organization,
+- `StoreInventory` records copied from all active products.
 
 ---
 
-## 4. Texnologiyalar
+## 4. Tech stack
 
-| Qatlam | Texnologiya |
+| Layer | Technology |
 |---|---|
 | Backend | Node.js 18+, Express 4, Joi, Winston, Morgan, Helmet, JWT, bcryptjs |
-| DB / ORM | PostgreSQL 17, Prisma 6 |
-| Veb | React 18, Vite 4, Tailwind CSS, TanStack Query, Zustand, React Router, i18next, IndexedDB |
-| Admin | React 18, Vite 4, Tailwind CSS, Recharts, React Router |
-| Mobil | Expo 54, React Native 0.81, Expo Router, NativeWind, WatermelonDB, MMKV, Zustand |
+| Database / ORM | PostgreSQL 17, Prisma 6 |
+| Web | React 18, Vite 4, Tailwind CSS, TanStack Query, Zustand, React Router, i18next, IndexedDB |
+| Admin panel | React 18, Vite 4, Tailwind CSS, Recharts, React Router |
+| Mobile | Expo 54, React Native 0.81, Expo Router, NativeWind, WatermelonDB, MMKV, Zustand |
 | Email | Resend (`RESEND_API_KEY`) |
 | OTP | Telegram bot long-polling / webhook |
-| Deploy | Render Blueprint (`render.yaml`), Vercel (veb uchun mos) |
+| Deployment | Render Blueprint (`render.yaml`), Vercel suitable for the web app |
 
 ---
 
-## 5. Papka tuzilishi
+## 5. Repository structure
 
 ```text
 TradeS/
@@ -145,29 +147,32 @@ TradeS/
 │   ├── store/
 │   ├── .env.example
 │   └── package.json
+├── docs/
+│   ├── LAYOUTS.md
+│   └── REPO_AUDIT.md
 ├── render.yaml
 └── README.md
 ```
 
 ---
 
-## 6. Asosiy ma’lumotlar modeli
+## 6. Core data model
 
 ```text
 User ──< OrganizationMember >── Organization ──< Store ──< Register
-                                      │             │
-                                      │             └──< StoreInventory >── Product
-                                      ├──< Customer
-                                      ├──< SaleTransaction ──< Sale ──< ReturnItem
-                                      │          ├──< Payment
-                                      │          └──< RegisterShift
-                                      └──< Return ──< ReturnItem
+                                       │             │
+                                       │             └──< StoreInventory >── Product
+                                       ├──< Customer
+                                       ├──< SaleTransaction ──< Sale ──< ReturnItem
+                                       │          ├──< Payment
+                                       │          └──< RegisterShift
+                                       └──< Return ──< ReturnItem
 
 Organization ──> Plan
 User ──< Sale (cashier) ──> Product
 ```
 
-Muhim yangi maydonlar:
+Important new fields:
 - `Sale.transactionId` → `SaleTransaction`;
 - `Sale.lineDiscount`, `Sale.taxAmount`;
 - `SaleTransaction`: `saleNumber`, `receiptNumber`, `subtotal`, `discountAmount`, `taxAmount`, `totalAmount`, `paidAmount`, `changeAmount`, `paymentMethod`, `paymentStatus`, `status`, `syncId`;
@@ -182,25 +187,25 @@ Muhim yangi maydonlar:
 Base URL: `http://localhost:5000/api/v1`  
 Health: `GET http://localhost:5000/health`
 
-### Route guruhlari
+### Route groups
 
-| Prefix | Tavsif |
+| Prefix | Description |
 |---|---|
 | `/auth` | register, login, OTP, refresh, logout, Google |
-| `/users` | profil va foydalanuvchi ma’lumotlari |
-| `/products` | mahsulot CRUD, qoldiq, kategoriyalar |
-| `/cart`, `/wishlist` | mijoz funksiyalari |
-| `/orders` | buyurtmalar |
-| `/sales` | savdolar, offline sync orqali yaratish |
-| `/reports` | dashboard, kunlik/oylik hisobotlar |
+| `/users` | profile and user data |
+| `/products` | product CRUD, stock, categories |
+| `/cart`, `/wishlist` | customer features |
+| `/orders` | orders |
+| `/sales` | sales, created through offline sync |
+| `/reports` | dashboard, daily/monthly reports |
 | `/sync` | `push` / `pull` |
-| `/ai` | AI yordamchi va tahlil |
-| `/admin` | admin boshqaruvi |
-| `/audit-logs` | audit jurnali |
-| `/content`, `/settings`, `/support` | kontent, sozlamalar, yordam |
-| `/telegram` | OTP va bot bilan bog‘liq endpointlar |
+| `/ai` | AI assistant and analytics |
+| `/admin` | admin management |
+| `/audit-logs` | audit log |
+| `/content`, `/settings`, `/support` | content, settings, support |
+| `/telegram` | OTP and bot-related endpoints |
 
-### Misol: login
+### Example: login
 
 ```bash
 curl -X POST http://localhost:5000/api/v1/auth/login \
@@ -208,9 +213,9 @@ curl -X POST http://localhost:5000/api/v1/auth/login \
   -d '{"phone":"+998901234567","password":"Test1234!"}'
 ```
 
-Javobda token `data.accessToken` ichida bo‘ladi.
+The token is returned in `data.accessToken`.
 
-### Misol: savdo yaratish
+### Example: create a sale
 
 ```bash
 curl -X POST http://localhost:5000/api/v1/sales \
@@ -224,17 +229,17 @@ curl -X POST http://localhost:5000/api/v1/sales \
   }'
 ```
 
-Server klient yuborgan `productName`, `sellPrice`, `buyPrice` qiymatlariga ishonmaydi — katalogdan qayta oladi.
+The server does not trust client-sent `productName`, `sellPrice`, or `buyPrice` values — it reloads them from the catalog.
 
 ---
 
-## 8. Mahalliy ishga tushirish
+## 8. Local development
 
-### Talablar
+### Requirements
 - Node.js 18+
-- PostgreSQL 14+ (lokal: `localhost:5432/trades`)
-- Telegram bot token (OTP uchun)
-- Resend API key (production email uchun)
+- PostgreSQL 14+ (local: `localhost:5432/trades`)
+- Telegram bot token (for OTP)
+- Resend API key (for production email)
 
 ### 1. Backend
 
@@ -242,7 +247,7 @@ Server klient yuborgan `productName`, `sellPrice`, `buyPrice` qiymatlariga ishon
 cd backend
 npm install
 cp .env.example .env
-# .env ichida DATABASE_URL, JWT secretlar, TELEGRAM_BOT_TOKEN ni to‘ldiring
+# Fill in DATABASE_URL, JWT secrets, TELEGRAM_BOT_TOKEN in .env
 
 npx prisma migrate deploy
 npx prisma generate
@@ -254,7 +259,7 @@ npm run dev
 
 Server: `http://localhost:5000`, health: `/health`.
 
-### 2. Veb POS
+### 2. Web POS
 
 ```bash
 cd web
@@ -275,22 +280,22 @@ npm run dev
 
 App: `http://localhost:5174`
 
-### 4. Mobil
+### 4. Mobile app
 
 ```bash
 cd mobile
 npm install
 cp .env.example .env
-# EXPO_PUBLIC_API_URL ni LAN IP yoki tunnel manziliga o‘zgartiring
+# Replace EXPO_PUBLIC_API_URL with your LAN IP or tunnel address
 npm start
 ```
 
 ---
 
-## 9. Tekshiruv buyruqlari
+## 9. Verification commands
 
 ```bash
-# Backend sintaksis
+# Backend syntax
 node --check backend/src/services/sale.service.js
 node --check backend/src/services/sync.service.js
 node --check backend/src/validators/sync.validator.js
@@ -298,14 +303,14 @@ node --check backend/src/validators/sync.validator.js
 # Prisma
 cd backend && npx prisma validate
 
-# Veb build
+# Web build
 cd web && npm run build
 
 # Health
 curl http://localhost:5000/health
 ```
 
-Migratsiyalar bazaga qo‘llanganligini tekshirish:
+Check that migrations were applied:
 
 ```bash
 cd backend
@@ -314,15 +319,15 @@ npx prisma migrate status
 
 ---
 
-## 10. Deploy
+## 10. Deployment
 
-`render.yaml` backend xizmatini tavsiflaydi:
+`render.yaml` describes the backend service:
 - `buildCommand`: `npm install && npx prisma generate && npx prisma migrate deploy`
 - `startCommand`: `node src/server.js`
 - `healthCheckPath`: `/health`
-- barcha maxfiy qiymatlar Render dashboard’ida kiritiladi (`sync: false` / `generateValue`).
+- all secret values are entered in the Render dashboard (`sync: false` / `generateValue`).
 
-Production uchun zarur env:
+Required production environment variables:
 - `DATABASE_URL`
 - `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `ADMIN_SETUP_KEY`, `ADMIN_SEED_PASSWORD`
 - `CORS_ORIGIN`, `CLIENT_URL`
@@ -331,40 +336,48 @@ Production uchun zarur env:
 
 ---
 
-## 11. Xavfsizlik
+## 11. Security
 
-- `.env`, `.env.local` va boshqa maxfiy fayllar git’ga kirmaydi.
-- `.env.example` faqat shablon.
-- Source kodda API kalitlari yo‘q.
-- JWT, bcrypt, Helmet, CORS, rate limiting, Joi validatsiyasi ishlatiladi.
-- Savdo narxlari va mahsulot nomi server tomonidan qayta tekshiriladi.
-- Oflayn savdolar `syncId` bilan takrorlanishdan himoyalangan.
+- `.env`, `.env.local`, and other secret files are excluded from Git.
+- `.env.example` contains placeholders only.
+- No API keys are stored in source code.
+- JWT, bcrypt, Helmet, CORS, rate limiting, and Joi validation are used.
+- Sale prices and product names are revalidated on the server.
+- Offline sales are protected from duplicates with `syncId`.
 
 ---
 
 ## 12. Roadmap
 
-### Keyingi POS bosqich
-- [ ] Ko‘p mahsulotli savat (`SaleTransaction` + `Sale` itemlar).
-- [ ] To‘lov oynasi: naqd / karta / aralash, qaytim hisoblash.
-- [ ] Chek chiqarish: printer + PDF / PWM orqali ulashish.
-- [ ] Mijoz tanlash, chegirma va soliq sozlamalari.
-- [ ] Kassa smenasi: ochish/yopish, naqd qoldiq tekshiruvi.
-- [ ] Qaytarish (Return / ReturnItem) oqimi.
-- [ ] Tarif limitlarini servis va UI da majburiy qilish.
-- [ ] Ta’minotchi va xarid (purchase) modullari.
-- [ ] Har do‘kon bo‘yicha qoldiq (`StoreInventory`) operatsiyalari.
+### Next POS milestone
+- [ ] Multi-item cart (`SaleTransaction` + `Sale` line items).
+- [ ] Payment screen: cash / card / mixed, change calculation.
+- [ ] Receipt printing: printer + PDF / share sheet.
+- [ ] Customer selection, discounts, and tax settings.
+- [ ] Register shifts: open/close, cash drawer check.
+- [ ] Returns flow (`Return` / `ReturnItem`).
+- [ ] Enforce plan limits in services and UI.
+- [ ] Supplier and purchase modules.
+- [ ] Per-store inventory operations (`StoreInventory`).
 
-### Integratsiyalar
-- [ ] Payme / Click to‘lov shlyuzlari.
-- [ ] To‘liq KZ / TJ / KG tillari va valyutalari.
-- [ ] QR kod va shtrix-kod skanerlash.
-- [ ] Real-time bildirishnomalar.
+### Integrations
+- [ ] Payme / Click payment gateways.
+- [ ] Full KZ / TJ / KG languages and currencies.
+- [ ] QR code and barcode scanning.
+- [ ] Real-time notifications.
 
 ---
 
-## 13. Litsenziya
+## 13. Documentation
 
-MIT — foydalanish va o‘zgartirish erkin.
+- [Screen and layout catalog](./docs/LAYOUTS.md) — every web, admin, and mobile screen in English.
+- [Repository audit](./docs/REPO_AUDIT.md) — GitHub status, missing items, failing checks.
+- [Docs index](./docs/index.md) — technical documentation index.
 
-**TradeS — savdo boshqaruvi oddiy, tez va ishonchli.**
+---
+
+## 14. License
+
+MIT — free to use and modify. See [LICENSE](./LICENSE).
+
+**TradeS — simple, fast, and reliable sales management.**
