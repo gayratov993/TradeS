@@ -1,0 +1,513 @@
+import { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Search, Plus, X, Pencil, Trash2, Package, AlertCircle, PackagePlus } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import toast from 'react-hot-toast';
+import * as productsApi from '../api/products.api';
+import useAuthStore from '../store/authStore';
+import Dropdown from '../components/ui/Dropdown';
+
+const BAG_WEIGHT_PRESETS = [5, 10, 25, 50, 100];
+const CUSTOM_BAG_WEIGHT = '__custom__';
+const isPresetBagWeight = (w) => BAG_WEIGHT_PRESETS.some((p) => String(p) === String(w));
+
+export default function Products() {
+  const { t, i18n } = useTranslation();
+  const user = useAuthStore((s) => s.user);
+  // Mirrors backend rule (product.service.js): owner OR ADMIN/SUPER_ADMIN may edit/delete.
+  const canManage = (product) =>
+    !!user && (['ADMIN', 'SUPER_ADMIN'].includes(user.role) || product.ownerId === user.id);
+  const locale = i18n.language.startsWith('uz') ? 'uz-UZ' : i18n.language.startsWith('ru') ? 'ru-RU' : 'en-US';
+
+  const UNITS = [
+    { value: 'pcs', label: t('unit_pcs') },
+    { value: 'kg', label: t('unit_kg') },
+    { value: 'l', label: t('unit_l') },
+    { value: 'box', label: t('unit_box') },
+  ];
+
+  function fmt(n) {
+    return Number(n || 0).toLocaleString(locale) + " " + t('currency');
+  }
+
+  function StockBadge({ stock }) {
+    if (stock <= 0) return <span className="px-2.5 py-1 rounded-lg text-xs font-bold bg-red-100 text-red-600">{t('out_of_stock')}</span>;
+    if (stock <= 10) return <span className="px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-100 text-amber-700">{stock} {t('pcs')}</span>;
+    return <span className="px-2.5 py-1 rounded-lg text-xs font-bold bg-green-100 text-green-700">{stock} {t('pcs')}</span>;
+  }
+
+  const [search, setSearch] = useState('');
+  const [modal, setModal] = useState(null); // null | 'add' | { product }
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [restockTarget, setRestockTarget] = useState(null);
+
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: ['products'],
+    queryFn: () => productsApi.getProducts(),
+  });
+
+  const allProducts = data?.data?.data?.products || [];
+  const products = Array.isArray(allProducts)
+    ? allProducts.filter((p) =>
+      p.name.toLowerCase().includes(search.toLowerCase())
+    )
+    : [];
+
+  return (
+    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#0F172A]">
+      {/* Page header */}
+      <div className="bg-white dark:bg-[#1E293B] border-b border-[#E2E8F0] dark:border-[#334155] px-5 py-4 flex items-center justify-between sticky top-0 z-10">
+        <h1 className="text-lg font-bold text-[#0F172A] dark:text-slate-100">{t('products')}</h1>
+        <button
+          onClick={() => setModal('add')}
+          className="flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white font-bold px-4 py-2.5 rounded-xl transition"
+        >
+          <Plus size={18} />
+          <span className="hidden sm:inline">{t('add_product')}</span>
+          <span className="sm:hidden">{t('add')}</span>
+        </button>
+      </div>
+
+      <div className="px-4 sm:px-6 py-5 max-w-3xl mx-auto flex flex-col gap-4">
+        {/* Search */}
+        <div className="relative">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#94A3B8]" size={18} />
+          <input
+            type="search"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder={t('search_products')}
+            className="w-full h-12 rounded-xl border border-[#E2E8F0] dark:border-[#334155] bg-white dark:bg-[#1E293B] pl-11 pr-4 text-base text-[#0F172A] dark:text-slate-100 placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
+          />
+          {search && (
+            <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-[#94A3B8] hover:text-[#64748B]">
+              <X size={16} />
+            </button>
+          )}
+        </div>
+
+        {/* Product list */}
+        {isError ? (
+          <div className="text-center py-16">
+            <AlertCircle size={40} className="mx-auto mb-3 text-red-400" />
+            <p className="font-semibold text-red-500">{t('error_loading')}</p>
+            <button onClick={() => refetch()} className="mt-3 text-sm text-green-600 font-semibold hover:underline">{t('retry')}</button>
+          </div>
+        ) : isLoading ? (
+          <div className="flex flex-col gap-3">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-[#E2E8F0] dark:border-[#334155] p-4 animate-pulse flex justify-between">
+                <div className="flex flex-col gap-2">
+                  <div className="h-4 w-36 bg-slate-200 dark:bg-slate-700 rounded" />
+                  <div className="h-3 w-24 bg-slate-100 dark:bg-slate-800 rounded" />
+                </div>
+                <div className="h-8 w-16 bg-slate-200 dark:bg-slate-700 rounded-lg" />
+              </div>
+            ))}
+          </div>
+        ) : products.length === 0 ? (
+          <div className="text-center py-16 text-[#64748B]">
+            <Package size={40} className="mx-auto mb-3 opacity-40" />
+            <p className="font-semibold">{t('no_products_found')}</p>
+            {search && <p className="text-sm mt-1">{t('try_different_search')}</p>}
+            {!search && (
+              <button
+                onClick={() => setModal('add')}
+                className="mt-4 inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white font-bold px-5 py-3 rounded-xl transition"
+              >
+                <Plus size={18} />
+                {t('add_first_product')}
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className="flex flex-col gap-3">
+            {products.map((product) => (
+              <div key={product.id} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-[#E2E8F0] dark:border-[#334155] p-4 flex items-center justify-between gap-3">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <p className="font-bold text-[#0F172A] dark:text-slate-100 truncate">{product.name}</p>
+                    <StockBadge stock={product.stock} />
+                  </div>
+                  {product.unit === 'box' && product.bagWeightKg ? (
+                    <p className="text-xs text-[#94A3B8] dark:text-slate-500 mb-0.5">{t('unit_box')} · {product.bagWeightKg} kg</p>
+                  ) : null}
+                  <div className="flex flex-wrap gap-x-4 gap-y-0.5 text-sm text-[#64748B] dark:text-slate-400">
+                    <span>{t('buy_price')} {Number(product.buyPrice).toLocaleString(locale)} {t('currency')}</span>
+                    <span className="text-green-600 font-semibold">{t('sell_price')} {Number(product.sellPrice).toLocaleString(locale)} {t('currency')}</span>
+                  </div>
+                </div>
+                {canManage(product) && (
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setRestockTarget(product)}
+                      className="p-2.5 rounded-xl hover:bg-green-50 dark:hover:bg-green-500/10 text-[#64748B] dark:text-slate-400 hover:text-green-600 dark:hover:text-green-400 transition"
+                      title={t('restock_action')}
+                    >
+                      <PackagePlus size={18} />
+                    </button>
+                    <button
+                      onClick={() => setModal(product)}
+                      className="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-[#64748B] dark:text-slate-400 hover:text-[#0F172A] dark:hover:text-slate-100 transition"
+                      title={t('edit_product')}
+                    >
+                      <Pencil size={18} />
+                    </button>
+                    <button
+                      onClick={() => setDeleteTarget(product)}
+                      className="p-2.5 rounded-xl hover:bg-red-50 dark:hover:bg-red-500/10 text-[#64748B] dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition"
+                      title={t('delete')}
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Modals */}
+      {modal && (
+        <ProductModal
+          product={modal === 'add' ? null : modal}
+          onClose={() => setModal(null)}
+          t={t}
+          fmt={fmt}
+          UNITS={UNITS}
+        />
+      )}
+      {deleteTarget && (
+        <DeleteConfirm
+          product={deleteTarget}
+          onClose={() => setDeleteTarget(null)}
+          t={t}
+        />
+      )}
+      {restockTarget && (
+        <RestockModal
+          product={restockTarget}
+          onClose={() => setRestockTarget(null)}
+          t={t}
+        />
+      )}
+    </div>
+  );
+}
+
+function ProductModal({ product, onClose, t, fmt, UNITS }) {
+  const emptyForm = { name: '', buyPrice: '', sellPrice: '', stock: '', unit: 'pcs', bagWeightKg: '' };
+  const [form, setForm] = useState(
+    product
+      ? {
+        name: product.name,
+        buyPrice: product.buyPrice,
+        sellPrice: product.sellPrice,
+        stock: product.stock,
+        unit: product.unit || 'pcs',
+        bagWeightKg: product.bagWeightKg ? String(product.bagWeightKg) : '',
+      }
+      : emptyForm
+  );
+  const [bagWeightMode, setBagWeightMode] = useState(
+    product?.bagWeightKg && !isPresetBagWeight(product.bagWeightKg) ? CUSTOM_BAG_WEIGHT : ''
+  );
+  const [errors, setErrors] = useState({});
+  const qc = useQueryClient();
+
+  const createMutation = useMutation({
+    mutationFn: productsApi.createProduct,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['products'] });
+      toast.success(t('product_added'));
+      onClose();
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }) => productsApi.updateProduct(id, data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['products'] });
+      toast.success(t('product_updated'));
+      onClose();
+    },
+  });
+
+  const isLoading = createMutation.isPending || updateMutation.isPending;
+
+  const validate = () => {
+    const e = {};
+    if (!form.name.trim()) e.name = t('enter_name');
+    const bp = Number(form.buyPrice);
+    const sp = Number(form.sellPrice);
+    const st = Number(form.stock);
+    if (!form.buyPrice || isNaN(bp) || bp <= 0) e.buyPrice = t('enter_price');
+    if (!form.sellPrice || isNaN(sp) || sp <= 0) e.sellPrice = t('enter_price');
+    if (form.stock === '' || isNaN(st) || st < 0) e.stock = t('enter_quantity');
+    if (form.unit === 'box' && !(Number(form.bagWeightKg) > 0)) e.bagWeightKg = t('bag_weight_required');
+    return e;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const errs = validate();
+    if (Object.keys(errs).length) { setErrors(errs); return; }
+    const payload = {
+      name: form.name.trim(),
+      buyPrice: parseFloat(form.buyPrice),
+      sellPrice: parseFloat(form.sellPrice),
+      stock: parseInt(form.stock, 10) || 0,
+      unit: form.unit,
+      bagWeightKg: form.unit === 'box' ? parseFloat(form.bagWeightKg) : null,
+    };
+    if (product) {
+      updateMutation.mutate({ id: product.id, data: payload });
+    } else {
+      createMutation.mutate(payload);
+    }
+  };
+
+  const handleChange = (field) => (e) => {
+    setForm((p) => ({ ...p, [field]: e.target.value }));
+    if (errors[field]) setErrors((p) => ({ ...p, [field]: '' }));
+  };
+
+  const inputCls = (field) =>
+    `w-full h-12 rounded-xl border px-4 text-base text-[#0F172A] dark:text-slate-100 placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition ${errors[field] ? 'border-red-400 bg-red-50 dark:bg-red-500/10' : 'border-[#E2E8F0] dark:border-[#334155] bg-white dark:bg-[#0F172A]'
+    }`;
+
+  return (
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={onClose}>
+      <div
+        className="bg-white dark:bg-[#1E293B] w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl p-6 max-h-[90vh] overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="text-lg font-bold text-[#0F172A] dark:text-slate-100">
+            {product ? t('edit_product') : t('add_new_product')}
+          </h2>
+          <button onClick={onClose} className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 dark:text-slate-300 transition">
+            <X size={20} />
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <div>
+            <label className="block text-sm font-semibold text-[#0F172A] dark:text-slate-100 mb-2">{t('product_name')}</label>
+            <input type="text" value={form.name} onChange={handleChange('name')} placeholder={t('example_product_name')} className={inputCls('name')} />
+            {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-sm font-semibold text-[#0F172A] dark:text-slate-100 mb-2">{t('buy_price_label')} ({t('currency')})</label>
+              <input type="number" value={form.buyPrice} onChange={handleChange('buyPrice')} placeholder="0" min="0" className={inputCls('buyPrice')} />
+              {errors.buyPrice && <p className="text-red-500 text-sm mt-1">{errors.buyPrice}</p>}
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-[#0F172A] dark:text-slate-100 mb-2">{t('sell_price_label')} ({t('currency')})</label>
+              <input type="number" value={form.sellPrice} onChange={handleChange('sellPrice')} placeholder="0" min="0" className={inputCls('sellPrice')} />
+              {errors.sellPrice && <p className="text-red-500 text-sm mt-1">{errors.sellPrice}</p>}
+            </div>
+          </div>
+
+          {form.buyPrice && form.sellPrice && Number(form.sellPrice) > Number(form.buyPrice) && (
+            <div className="bg-green-50 dark:bg-green-500/10 border border-green-200 dark:border-green-500/20 rounded-xl px-4 py-3 text-sm text-green-700 dark:text-green-400">
+              {t('profit')} <span className="font-bold">{fmt(Number(form.sellPrice - form.buyPrice))}</span> per {t(`unit_${form.unit}`)}
+            </div>
+          )}
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-sm font-semibold text-[#0F172A] dark:text-slate-100 mb-2">{t('quantity')}</label>
+              <input type="number" value={form.stock} onChange={handleChange('stock')} placeholder="0" min="0" className={inputCls('stock')} />
+              {errors.stock && <p className="text-red-500 text-sm mt-1">{errors.stock}</p>}
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-[#0F172A] dark:text-slate-100 mb-2">{t('unit')}</label>
+              <Dropdown
+                options={UNITS}
+                value={form.unit}
+                onChange={(v) => {
+                  setForm((p) => ({ ...p, unit: v, bagWeightKg: v === 'box' ? p.bagWeightKg : '' }));
+                  if (v !== 'box') setBagWeightMode('');
+                  if (errors.bagWeightKg) setErrors((p) => ({ ...p, bagWeightKg: '' }));
+                }}
+              />
+            </div>
+          </div>
+
+          {form.unit === 'box' && (
+            <div>
+              <label className="block text-sm font-semibold text-[#0F172A] dark:text-slate-100 mb-2">{t('bag_weight_label')}</label>
+              <Dropdown
+                options={[
+                  ...BAG_WEIGHT_PRESETS.map((w) => ({ value: String(w), label: `${w} kg` })),
+                  { value: CUSTOM_BAG_WEIGHT, label: t('bag_weight_custom') },
+                ]}
+                value={bagWeightMode === CUSTOM_BAG_WEIGHT ? CUSTOM_BAG_WEIGHT : form.bagWeightKg}
+                onChange={(v) => {
+                  if (v === CUSTOM_BAG_WEIGHT) {
+                    setBagWeightMode(CUSTOM_BAG_WEIGHT);
+                    setForm((p) => ({ ...p, bagWeightKg: isPresetBagWeight(p.bagWeightKg) ? '' : p.bagWeightKg }));
+                  } else {
+                    setBagWeightMode('');
+                    setForm((p) => ({ ...p, bagWeightKg: v }));
+                  }
+                  if (errors.bagWeightKg) setErrors((p) => ({ ...p, bagWeightKg: '' }));
+                }}
+                placeholder={t('bag_weight_required')}
+                error={bagWeightMode !== CUSTOM_BAG_WEIGHT ? errors.bagWeightKg : undefined}
+              />
+              {bagWeightMode === CUSTOM_BAG_WEIGHT && (
+                <input
+                  type="number"
+                  min="0.01"
+                  step="0.01"
+                  autoFocus
+                  value={form.bagWeightKg}
+                  onChange={(e) => {
+                    setForm((p) => ({ ...p, bagWeightKg: e.target.value }));
+                    if (errors.bagWeightKg) setErrors((p) => ({ ...p, bagWeightKg: '' }));
+                  }}
+                  placeholder="0.00"
+                  className={`${inputCls('bagWeightKg')} mt-2`}
+                />
+              )}
+              {bagWeightMode === CUSTOM_BAG_WEIGHT && errors.bagWeightKg && (
+                <p className="text-red-500 text-sm mt-1">{errors.bagWeightKg}</p>
+              )}
+            </div>
+          )}
+
+          <div className="flex gap-3 mt-2">
+            <button type="button" onClick={onClose} className="flex-1 h-12 rounded-xl border border-[#E2E8F0] dark:border-[#334155] text-[#64748B] dark:text-slate-400 font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+              {t('cancel')}
+            </button>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="flex-1 h-12 rounded-xl bg-green-500 hover:bg-green-600 text-white font-bold transition flex items-center justify-center gap-2 disabled:opacity-60"
+            >
+              {isLoading ? (
+                <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              ) : product ? t('save') : t('add')}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+function DeleteConfirm({ product, onClose, t }) {
+  const qc = useQueryClient();
+  const deleteMutation = useMutation({
+    mutationFn: () => productsApi.deleteProduct(product.id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['products'] });
+      toast.success(t('product_deleted'));
+      onClose();
+    },
+  });
+
+  return (
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="bg-white dark:bg-[#1E293B] rounded-2xl p-6 max-w-sm w-full" onClick={(e) => e.stopPropagation()}>
+        <h2 className="text-lg font-bold text-[#0F172A] dark:text-slate-100 mb-2">{t('delete_product')}</h2>
+        <p className="text-[#64748B] dark:text-slate-400 text-sm mb-6">
+          <strong>{product.name}</strong> {t('delete_confirm_msg')}
+        </p>
+        <div className="flex gap-3">
+          <button onClick={onClose} className="flex-1 h-12 rounded-xl border border-[#E2E8F0] dark:border-[#334155] text-[#64748B] dark:text-slate-400 font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+            {t('cancel')}
+          </button>
+          <button
+            onClick={() => deleteMutation.mutate()}
+            disabled={deleteMutation.isPending}
+            className="flex-1 h-12 rounded-xl bg-red-500 hover:bg-red-600 text-white font-bold transition flex items-center justify-center gap-2 disabled:opacity-60"
+          >
+            {deleteMutation.isPending ? (
+              <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            ) : t('delete')}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function RestockModal({ product, onClose, t }) {
+  const [quantity, setQuantity] = useState('');
+  const [error, setError] = useState('');
+  const qc = useQueryClient();
+
+  const restockMutation = useMutation({
+    mutationFn: (qty) => productsApi.restockProduct(product.id, qty),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['products'] });
+      toast.success(t('restock_success'));
+      onClose();
+    },
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const qty = Number(quantity);
+    if (!quantity || isNaN(qty) || qty <= 0) {
+      setError(t('enter_restock_quantity'));
+      return;
+    }
+    restockMutation.mutate(qty);
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={onClose}>
+      <div
+        className="bg-white dark:bg-[#1E293B] w-full sm:max-w-sm rounded-t-2xl sm:rounded-2xl p-6"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="text-lg font-bold text-[#0F172A] dark:text-slate-100">{t('restock_modal_title')}</h2>
+          <button onClick={onClose} className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+            <X size={20} />
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <div>
+            <p className="font-bold text-[#0F172A] dark:text-slate-100 mb-3 truncate">{product.name}</p>
+            <label className="block text-sm font-semibold text-[#0F172A] dark:text-slate-100 mb-2">{t('restock_quantity_label')}</label>
+            <input
+              type="number"
+              value={quantity}
+              onChange={(e) => { setQuantity(e.target.value); if (error) setError(''); }}
+              placeholder="0"
+              min="0"
+              autoFocus
+              className={`w-full h-12 rounded-xl border px-4 text-base text-[#0F172A] placeholder-[#94A3B8] dark:text-slate-100 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition ${error ? 'border-red-400 bg-red-50 dark:bg-red-500/10' : 'border-[#E2E8F0] bg-white dark:border-[#334155] dark:bg-[#0F172A]'
+                }`}
+            />
+            {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+          </div>
+
+          <div className="flex gap-3 mt-2">
+            <button type="button" onClick={onClose} className="flex-1 h-12 rounded-xl border border-[#E2E8F0] text-[#64748B] font-semibold hover:bg-slate-50 transition dark:border-[#334155] dark:text-slate-400 dark:hover:bg-slate-800">
+              {t('cancel')}
+            </button>
+            <button
+              type="submit"
+              disabled={restockMutation.isPending}
+              className="flex-1 h-12 rounded-xl bg-green-500 hover:bg-green-600 text-white font-bold transition flex items-center justify-center gap-2 disabled:opacity-60"
+            >
+              {restockMutation.isPending ? (
+                <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              ) : t('restock_action')}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}

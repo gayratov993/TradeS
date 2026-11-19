@@ -1,0 +1,63 @@
+# Node.js
+node_modules/
+dist/
+build/
+.npm
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+# Environment files — never commit real secrets (.env.example is the safe template)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+**/.env
+!**/.env.example
+
+# Expo
+.expo/
+*.jks
+*.keystore
+*.p8
+*.apk
+*.aab
+*.ipa
+*.plist
+*.json
+!app.json
+!app.config.json
+!package.json
+!package-lock.json
+!tsconfig.json
+!tsconfig.*.json
+!vercel.json
+!eas.json
+!mobile/src/i18n/locales/*.json
+!web/src/i18n/locales/*.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*.DS_Store
+
+# Logs
+logs/
+*.log
+
+# Coverage
+coverage/
+
+# Local backups of pre-swap apps (history preserved in git)
+mobile_old_*/
+web_old_*/
+mobile_backup/
+
+# Playwright MCP artifacts
+.playwright-mcp/
+
+# Stray Windows device-name file
+nul

@@ -1,0 +1,476 @@
+import { useState } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import {
+  Eye, EyeOff, LogIn, Globe, ChevronDown, Mail, KeyRound, ArrowLeft
+} from 'lucide-react';
+import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
+import useAuthStore from '../store/authStore';
+
+const LANGS = ['uz', 'ru', 'en'];
+const BOT = import.meta.env.VITE_TELEGRAM_BOT || 'trades_otp_bot';
+
+const TX = {
+  uz: {
+    tagline:     "Kichik biznes uchun savdo menejeri",
+    headline:    "Savdoni boshqarish hech qachon bu qadar oson bo'lmagan",
+    sub:         "Kunlik savdolar, foyda tahlili, omborxona — barchasi bir joyda va bepul",
+    login_title: "Tizimga kirish",
+    login_sub:   "Hisobingizga kiring",
+    no_account:  "Hisob yo'qmi?",
+    register:    "Ro'yxatdan o'ting",
+    phone_required: "Telefon raqamni to'liq kiriting",
+    email_login:    "Email kod bilan kirish",
+    back_to_pwd:    "Parol bilan kirish",
+    email_label:    "Email manzil",
+    email_ph:       "email@misol.com",
+    email_required: "Email manzilni kiriting",
+    get_code:       "Kod olish",
+    otp_label:      "Tasdiqlash kodi",
+    otp_sent:       "Emailingizga 6 xonali kod yuborildi",
+    verify_login:   "Kirish",
+    resend:         "Kodni qayta yuborish",
+    back:           "Orqaga",
+    trust: ["Ma'lumotlaringiz xavfsiz", "Bepul foydalanish", "O'rnatish shart emas"],
+  },
+  ru: {
+    tagline:     "Менеджер продаж для малого бизнеса",
+    headline:    "Управление продажами никогда не было таким простым",
+    sub:         "Ежедневные продажи, анализ прибыли, склад — всё в одном месте и бесплатно",
+    login_title: "Войти в систему",
+    login_sub:   "Войдите в ваш аккаунт",
+    no_account:  "Нет аккаунта?",
+    register:    "Зарегистрироваться",
+    phone_required: "Введите номер телефона полностью",
+    email_login:    "Войти по коду из email",
+    back_to_pwd:    "Войти по паролю",
+    email_label:    "Email адрес",
+    email_ph:       "email@example.com",
+    email_required: "Введите email адрес",
+    get_code:       "Получить код",
+    otp_label:      "Код подтверждения",
+    otp_sent:       "6-значный код отправлен на ваш email",
+    verify_login:   "Войти",
+    resend:         "Отправить код повторно",
+    back:           "Назад",
+    trust: ["Ваши данные в безопасности", "Бесплатное использование", "Установка не нужна"],
+  },
+  en: {
+    tagline:     "Sales manager for small businesses",
+    headline:    "Managing sales has never been this easy",
+    sub:         "Daily sales, profit analysis, warehouse — all in one place, completely free",
+    login_title: "Sign In",
+    login_sub:   "Sign into your account",
+    no_account:  "Don't have an account?",
+    register:    "Sign Up",
+    phone_required: "Enter your full phone number",
+    email_login:    "Sign in with email code",
+    back_to_pwd:    "Sign in with password",
+    email_label:    "Email Address",
+    email_ph:       "email@example.com",
+    email_required: "Enter your email address",
+    get_code:       "Get Code",
+    otp_label:      "Verification Code",
+    otp_sent:       "A 6-digit code was sent to your email",
+    verify_login:   "Sign In",
+    resend:         "Resend code",
+    back:           "Back",
+    trust: ["Your data is secure", "Free to use", "No installation needed"],
+  },
+};
+
+// Format as +998 XX XXX XX XX from raw digits
+const formatPhone = (raw) => {
+  let d = raw.replace(/\D/g, '');
+  if (d.startsWith('998')) d = d.slice(3);
+  d = d.slice(0, 9);
+  let out = '+998';
+  if (d.length) out += ' ' + d.slice(0, 2);
+  if (d.length > 2) out += ' ' + d.slice(2, 5);
+  if (d.length > 5) out += ' ' + d.slice(5, 7);
+  if (d.length > 7) out += ' ' + d.slice(7, 9);
+  return out;
+};
+
+export default function Login() {
+  const { t, i18n } = useTranslation();
+  const lang = i18n.language.startsWith('ru') ? 'ru' : i18n.language.startsWith('en') ? 'en' : 'uz';
+  const tx = TX[lang];
+
+  const [form, setForm] = useState({ phone: '+998 ', password: '' });
+  const [showPwd, setShowPwd] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [langOpen, setLangOpen] = useState(false);
+
+  // Email-code login: alternate to phone+password. mode 'password' | 'email'.
+  const [mode, setMode] = useState('password');
+  const [emailStep, setEmailStep] = useState('request'); // 'request' | 'otp'
+  const [email, setEmail] = useState('');
+  const [code, setCode] = useState('');
+  const [devCode, setDevCode] = useState('');
+
+  const login = useAuthStore((s) => s.login);
+  const verifyNewDeviceLogin = useAuthStore((s) => s.verifyNewDeviceLogin);
+  const requestEmailOtp = useAuthStore((s) => s.requestEmailOtp);
+  const verifyEmailOtp = useAuthStore((s) => s.verifyEmailOtp);
+  const registerTestUser = useAuthStore((s) => s.registerTestUser);
+  const isLoading = useAuthStore((s) => s.isLoading);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || '/dashboard';
+
+  const goAfterLogin = () => navigate(from === '/login' ? '/dashboard' : from, { replace: true });
+
+  const phoneDigits = form.phone.replace(/\D/g, '');
+
+  const validate = () => {
+    const e = {};
+    if (phoneDigits.length < 12) e.phone = tx.phone_required;
+    if (!form.password)          e.password = t('password_required');
+    return e;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const errs = validate();
+    if (Object.keys(errs).length) { setErrors(errs); return; }
+    setErrors({});
+    try {
+      const result = await login({ phone: form.phone.replace(/\s/g, ''), password: form.password });
+      if (result?.requiresDeviceConfirmation) {
+        setMode('device-confirm');
+        setCode('');
+        return;
+      }
+      goAfterLogin();
+    } catch (_) {
+      // login() already surfaces toast errors
+    }
+  };
+
+  // Same phone+password (kept in `form`) plus the Telegram code — completes
+  // the login started by handleSubmit above once a new device was flagged.
+  const handleDeviceConfirm = async (e) => {
+    e.preventDefault();
+    if (code.replace(/\D/g, '').length !== 6) return;
+    try {
+      await verifyNewDeviceLogin({
+        phone: form.phone.replace(/\s/g, ''),
+        password: form.password,
+        code: code.replace(/\D/g, ''),
+      });
+      goAfterLogin();
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Kod noto\'g\'ri');
+    }
+  };
+
+  // Send / resend the email OTP, then move to the code step.
+  const sendEmailCode = async () => {
+    if (!/^\S+@\S+\.\S+$/.test(email.trim())) { setErrors({ email: tx.email_required }); return; }
+    setErrors({});
+    try {
+      const res = await requestEmailOtp(email.trim().toLowerCase());
+      setDevCode(res?.data?.devCode || '');
+      setEmailStep('otp');
+      toast.success(tx.otp_sent);
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Xatolik yuz berdi');
+    }
+  };
+
+  const handleEmailLogin = async (e) => {
+    e.preventDefault();
+    if (code.replace(/\D/g, '').length !== 6) return;
+    try {
+      // No password → login-only (existing account). New emails are rejected here.
+      await verifyEmailOtp({ email: email.trim().toLowerCase(), code: code.replace(/\D/g, '') });
+      goAfterLogin();
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Kod noto\'g\'ri');
+    }
+  };
+
+  const handleTryDemo = async () => {
+    try {
+      await registerTestUser();
+      navigate('/dashboard', { replace: true });
+    } catch (_) {}
+  };
+
+  const onChange = (f) => (e) => {
+    const val = f === 'phone' ? formatPhone(e.target.value) : e.target.value;
+    setForm((p) => ({ ...p, [f]: val }));
+    if (errors[f]) setErrors((p) => ({ ...p, [f]: '' }));
+  };
+
+  const inputCls = (f) =>
+    `w-full h-12 rounded-xl border px-4 text-sm bg-[#0E150F]/50 text-white placeholder-slate-500 transition-all focus:outline-none focus:ring-2 focus:ring-[#2ECC71]/30 focus:border-[#2ECC71] ${
+      errors[f] ? 'border-red-500/50 bg-red-950/20' : 'border-[#2ECC71]/10 hover:border-[#2ECC71]/20'
+    }`;
+
+  return (
+    <div className="min-h-screen bg-[#0E150F] text-slate-100 font-sans selection:bg-[#2ECC71] selection:text-slate-950 overflow-x-hidden flex flex-col">
+
+      {/* Background decoration */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[600px] pointer-events-none overflow-hidden z-0">
+        <div className="absolute top-[-10%] left-[20%] w-[40%] h-[60%] rounded-full bg-[#2ECC71]/5 blur-[120px]" />
+        <div className="absolute top-[5%] right-[20%] w-[35%] h-[50%] rounded-full bg-[#1ABC9C]/5 blur-[100px]" />
+      </div>
+
+      {/* Navbar */}
+      <nav className="relative z-10 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between border-b border-[#2ECC71]/10">
+        <Link to="/" className="flex items-center gap-3">
+          <img src="/logo-dark.png" alt="TradeS" className="w-10 h-10 object-contain" />
+          <span className="text-xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-slate-400">
+            TradeS
+          </span>
+        </Link>
+
+        {/* Language Selector */}
+        <div className="relative">
+          <button
+            onClick={() => setLangOpen(!langOpen)}
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-emerald-950/40 hover:border-[#2ECC71]/30 bg-[#0E150F]/50 text-xs font-semibold text-slate-300 hover:text-white transition-all"
+          >
+            <Globe className="w-3.5 h-3.5" />
+            <span className="uppercase">{lang}</span>
+            <ChevronDown className={`w-3 h-3 transition-transform ${langOpen ? 'rotate-180' : ''}`} />
+          </button>
+
+          {langOpen && (
+            <div className="absolute right-0 mt-2 w-28 rounded-xl border border-emerald-950/40 bg-[#0E150F] shadow-xl overflow-hidden py-1 z-50">
+              {LANGS.map((l) => (
+                <button
+                  key={l}
+                  onClick={() => i18n.changeLanguage(l)}
+                  className="w-full text-left px-4 py-2 text-xs font-semibold hover:bg-[#1ABC9C]/10 text-slate-400 hover:text-white transition-all uppercase"
+                >
+                  {l === 'uz' ? 'O‘zbekcha' : l === 'ru' ? 'Русский' : 'English'}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </nav>
+
+      {/* Main Form Content */}
+      <div className="flex-1 flex flex-col items-center justify-center px-4 py-12 relative z-10">
+        <div className="w-full max-w-[420px] bg-[#0E150F]/40 backdrop-blur-md rounded-2xl border border-[#2ECC71]/10 shadow-2xl p-6 sm:p-8">
+          <div className="mb-6 text-center sm:text-left">
+            <h2 className="text-2xl font-extrabold text-white">{tx.login_title}</h2>
+            <p className="text-slate-400 text-sm mt-1">{tx.login_sub}</p>
+          </div>
+
+          {mode === 'password' && (
+          <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">{t('phone')}</label>
+              <input type="tel" autoComplete="tel" value={form.phone} onChange={onChange('phone')} placeholder="+998 90 123 45 67" className={inputCls('phone')} />
+              {errors.phone && <p className="text-red-400 text-xs mt-0.5">{errors.phone}</p>}
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">{t('password')}</label>
+              <div className="relative">
+                <input
+                  type={showPwd ? 'text' : 'password'}
+                  autoComplete="current-password"
+                  value={form.password}
+                  onChange={onChange('password')}
+                  placeholder="••••••••"
+                  className={`w-full h-12 rounded-xl border px-4 pr-12 text-sm bg-[#0E150F]/50 text-white placeholder-slate-500 transition-all focus:outline-none focus:ring-2 focus:ring-[#2ECC71]/30 focus:border-[#2ECC71] ${errors.password ? 'border-red-500/50 bg-red-950/20' : 'border-[#2ECC71]/10 hover:border-[#2ECC71]/20'}`}
+                />
+                <button type="button" onClick={() => setShowPwd(p => !p)} tabIndex={-1} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 p-1.5 rounded-lg transition">
+                  {showPwd ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+              {errors.password && <p className="text-red-400 text-xs mt-0.5">{errors.password}</p>}
+              <div className="flex justify-end mt-1">
+                <Link to="/forgot-password" className="text-xs text-[#2ECC71] hover:text-[#2ecc71]/80 hover:underline transition">
+                  {t('forgot_password') || 'Parolni unutdingizmi?'}
+                </Link>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full h-12 bg-[#2ECC71] hover:bg-[#2ecc71]/90 text-slate-950 text-sm font-extrabold rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-60 shadow-lg shadow-[#2ECC71]/10 mt-2 hover:scale-[1.02] active:scale-[0.98]"
+            >
+              {isLoading
+                ? <span className="w-5 h-5 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
+                : <><LogIn size={16} />{t('login')}</>
+              }
+            </button>
+
+            <button
+              type="button"
+              onClick={() => { setMode('email'); setErrors({}); setEmailStep('request'); setCode(''); }}
+              className="mt-1 flex items-center justify-center gap-2 text-sm text-slate-400 hover:text-[#2ECC71] transition"
+            >
+              <Mail size={15} /> {tx.email_login}
+            </button>
+          </form>
+          )}
+
+          {mode === 'email' && emailStep === 'request' && (
+            <div className="flex flex-col gap-5">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">{tx.email_label}</label>
+                <input
+                  type="email"
+                  autoComplete="email"
+                  autoFocus
+                  value={email}
+                  onChange={(e) => { setEmail(e.target.value); if (errors.email) setErrors({}); }}
+                  placeholder={tx.email_ph}
+                  className={inputCls('email')}
+                />
+                {errors.email && <p className="text-red-400 text-xs mt-0.5">{errors.email}</p>}
+              </div>
+              <button
+                type="button"
+                onClick={sendEmailCode}
+                disabled={isLoading}
+                className="w-full h-12 bg-[#2ECC71] hover:bg-[#2ecc71]/90 text-slate-950 text-sm font-extrabold rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-60 shadow-lg shadow-[#2ECC71]/10 mt-1 hover:scale-[1.02] active:scale-[0.98]"
+              >
+                {isLoading ? <span className="w-5 h-5 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" /> : tx.get_code}
+              </button>
+              <button
+                type="button"
+                onClick={() => { setMode('password'); setErrors({}); }}
+                className="flex items-center justify-center gap-1.5 text-sm text-slate-400 hover:text-white transition"
+              >
+                <ArrowLeft size={14} /> {tx.back_to_pwd}
+              </button>
+            </div>
+          )}
+
+          {mode === 'device-confirm' && (
+            <form onSubmit={handleDeviceConfirm} noValidate className="flex flex-col gap-4">
+              <div className="flex flex-col items-center text-center gap-3 mb-1">
+                <div className="w-16 h-16 rounded-2xl bg-[#2ECC71]/15 flex items-center justify-center">
+                  <KeyRound className="w-8 h-8 text-[#2ECC71]" />
+                </div>
+                <p className="text-white font-bold text-sm">Yangi qurilma aniqlandi</p>
+                <p className="text-slate-400 text-sm">Telegramga yuborilgan 6 xonali kodni kiriting</p>
+              </div>
+              <input
+                type="text"
+                inputMode="numeric"
+                autoFocus
+                maxLength={6}
+                value={code}
+                onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                placeholder="••••••"
+                className="w-full h-14 rounded-xl border border-[#2ECC71]/20 bg-[#0E150F]/50 text-white text-center text-2xl font-extrabold tracking-[0.5em] placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-[#2ECC71]/30 focus:border-[#2ECC71]"
+              />
+              <button
+                type="submit"
+                disabled={isLoading || code.length !== 6}
+                className="w-full h-12 bg-[#2ECC71] hover:bg-[#2ecc71]/90 text-slate-950 text-sm font-extrabold rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-60"
+              >
+                {isLoading ? <span className="w-5 h-5 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" /> : <><LogIn size={16} />{tx.verify_login}</>}
+              </button>
+              <button
+                type="button"
+                onClick={() => { setMode('password'); setCode(''); }}
+                className="flex items-center justify-center gap-1.5 text-sm text-slate-400 hover:text-white transition"
+              >
+                <ArrowLeft size={14} /> {tx.back}
+              </button>
+            </form>
+          )}
+
+          {mode === 'email' && emailStep === 'otp' && (
+            <form onSubmit={handleEmailLogin} noValidate className="flex flex-col gap-4">
+              <div className="flex flex-col items-center text-center gap-3 mb-1">
+                <div className="w-16 h-16 rounded-2xl bg-[#2ECC71]/15 flex items-center justify-center">
+                  <KeyRound className="w-8 h-8 text-[#2ECC71]" />
+                </div>
+                <p className="text-slate-400 text-sm">{tx.otp_sent}</p>
+                <p className="text-[#2ECC71] font-semibold text-sm">{email}</p>
+                {devCode && (
+                  <p className="text-amber-300 text-sm font-bold">
+                    Dev rejim — tasdiqlash kodi: <span className="tracking-widest">{devCode}</span>
+                  </p>
+                )}
+              </div>
+              <input
+                type="text"
+                inputMode="numeric"
+                autoFocus
+                maxLength={6}
+                value={code}
+                onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                placeholder="••••••"
+                className="w-full h-14 rounded-xl border border-[#2ECC71]/20 bg-[#0E150F]/50 text-white text-center text-2xl font-extrabold tracking-[0.5em] placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-[#2ECC71]/30 focus:border-[#2ECC71]"
+              />
+              <button
+                type="submit"
+                disabled={isLoading || code.length !== 6}
+                className="w-full h-12 bg-[#2ECC71] hover:bg-[#2ecc71]/90 text-slate-950 text-sm font-extrabold rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-60"
+              >
+                {isLoading ? <span className="w-5 h-5 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" /> : <><LogIn size={16} />{tx.verify_login}</>}
+              </button>
+              <button type="button" onClick={sendEmailCode} disabled={isLoading} className="text-[#2ECC71] text-sm font-bold hover:underline disabled:opacity-50">
+                {tx.resend}
+              </button>
+              <button
+                type="button"
+                onClick={() => { setEmailStep('request'); setCode(''); }}
+                className="flex items-center justify-center gap-1.5 text-sm text-slate-400 hover:text-white transition"
+              >
+                <ArrowLeft size={14} /> {tx.back}
+              </button>
+            </form>
+          )}
+
+          <button
+            type="button"
+            onClick={handleTryDemo}
+            disabled={isLoading}
+            className="w-full h-11 mt-3 rounded-xl border border-dashed border-slate-700 text-slate-400 text-sm font-semibold hover:bg-slate-800 transition-all disabled:opacity-60 flex items-center justify-center gap-2"
+          >
+            {isLoading
+              ? <span className="w-4 h-4 border-2 border-slate-400 border-t-transparent rounded-full animate-spin" />
+              : t('try_demo_cta')
+            }
+          </button>
+          <p className="text-center text-xs text-slate-500 mt-1.5">
+            {t('try_demo_note')}
+          </p>
+
+          <div className="mt-6 text-center text-sm text-slate-400">
+            {tx.no_account}{' '}
+            <Link to="/register" className="text-[#2ECC71] font-bold hover:underline transition">
+              {tx.register}
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <footer className="border-t border-[#2ECC71]/10 bg-[#0E150F] py-8 text-center text-slate-500 text-xs relative z-10">
+        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+          <div className="flex items-center gap-2">
+            <img src="/logo-dark.png" alt="TradeS" className="w-6 h-6 object-contain" />
+            <span className="font-bold text-slate-400">TradeS</span>
+          </div>
+          <div className="flex items-center gap-4">
+            <a
+              href={`https://t.me/${BOT}?start=support`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-primary-600 dark:hover:text-primary-400 hover:underline transition"
+            >
+              {t('contact_support')}
+            </a>
+            <span>&copy; {new Date().getFullYear()} TradeS. {t('copyright')}</span>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
