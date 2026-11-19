@@ -370,6 +370,7 @@ Required production environment variables:
 
 ## 13. Documentation
 
+- [Completion checklist](./docs/COMPLETION_CHECKLIST.md) — all user-stated requirements, remaining work and acceptance criteria.
 - [Screen and layout catalog](./docs/LAYOUTS.md) — every web, admin, and mobile screen in English.
 - [Repository audit](./docs/REPO_AUDIT.md) — GitHub status, missing items, failing checks.
 - [Docs index](./docs/index.md) — technical documentation index.

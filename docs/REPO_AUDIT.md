@@ -4,6 +4,8 @@ Audited on 2026-11-20 for `gayratov993/TradeS`.
 
 This is a practical review of what is complete, what is missing, and what still fails on GitHub. It is not a security guarantee.
 
+For the full user-requested feature checklist and acceptance criteria, see [COMPLETION_CHECKLIST.md](./COMPLETION_CHECKLIST.md).
+
 ---
 
 ## 1. Repository snapshot

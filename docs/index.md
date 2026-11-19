@@ -9,6 +9,7 @@ All current English documentation for TradeS is linked from this page. Older fil
 | File | Description |
 |---|---|
 | [../README.md](../README.md) | Project overview, setup, API, architecture, roadmap |
+| [COMPLETION_CHECKLIST.md](./COMPLETION_CHECKLIST.md) | All user-stated requirements, remaining work, acceptance criteria |
 | [LAYOUTS.md](./LAYOUTS.md) | Every web, admin, and mobile screen/layout in English |
 | [REPO_AUDIT.md](./REPO_AUDIT.md) | GitHub repository audit: missing items, failing checks, open work |
 
