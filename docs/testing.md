@@ -78,8 +78,8 @@ Response (200): {
   "statusCode": 200,
   "data": {
     "user": {...},
-    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+    "accessToken": "<jwt-access-token>",
+    "refreshToken": "<jwt-refresh-token>"
   },
   "message": "Login successful",
   "success": true

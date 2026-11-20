@@ -297,8 +297,8 @@ After fixes:
 ```bash
 PORT=5002
 MONGO_URI=mongodb+srv://...
-JWT_ACCESS_SECRET=min_32_characters
-JWT_REFRESH_SECRET=min_32_characters
+JWT_ACCESS_SECRET=<set-a-long-random-secret>
+JWT_REFRESH_SECRET=<set-a-long-random-secret>
 NODE_ENV=development
 CORS_ORIGIN=http://localhost:5173
 ```
