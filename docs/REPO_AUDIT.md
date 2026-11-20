@@ -47,7 +47,7 @@ For the full user-requested feature checklist and acceptance criteria, see [COMP
 | No LICENSE | Metadata said MIT but the file was missing. | Added `LICENSE`. |
 | Stale Render comment | Still referenced `atxamov99/TradeS`. | Updated to `gayratov993/savdo-go`. |
 
-Verified: Secret Scan run [44602578571](https://github.com/gayratov993/savdo-go/actions/runs/44602578571) completed with **success** on commit `8734d00`. Later PR runs failed with `fatal: ambiguous argument '<sha>^..<sha>'`; the workflow was rewritten to call the Gitleaks CLI directly. Full-history runs then flagged only placeholder strings in older docs (`JWT_*_SECRET=min_32_characters`, example JWTs), so those placeholders were replaced and the workflow now scans the current working tree with `gitleaks dir`.
+Verified: Secret Scan run [44602578571](https://github.com/gayratov993/savdo-go/actions/runs/44602578571) completed with **success** on commit `8734d00`. Later PR runs failed with `fatal: ambiguous argument '<sha>^..<sha>'`; the workflow was rewritten to call the Gitleaks CLI directly. Full-history runs then flagged only placeholder strings in older docs (`JWT_*_SECRET=<long-random-secret>`, example JWTs), so those placeholders were replaced and the workflow now scans the current working tree with `gitleaks dir`.
 
 ---
 
