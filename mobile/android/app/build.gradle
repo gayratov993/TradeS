@@ -109,10 +109,10 @@ android {
             keyPassword 'android'
         }
         release {
-            storeFile file('release.keystore')
-            storePassword 'savdo123'
-            keyAlias 'savdo'
-            keyPassword 'savdo123'
+            storeFile file(project.findProperty('TRADES_UPLOAD_STORE_FILE') ?: 'release.keystore')
+            storePassword project.findProperty('TRADES_UPLOAD_STORE_PASSWORD') ?: ''
+            keyAlias project.findProperty('TRADES_UPLOAD_KEY_ALIAS') ?: ''
+            keyPassword project.findProperty('TRADES_UPLOAD_KEY_PASSWORD') ?: ''
         }
     }
     buildTypes {
@@ -120,7 +120,9 @@ android {
             signingConfig signingConfigs.debug
         }
         release {
-            signingConfig signingConfigs.release
+            if (project.hasProperty('TRADES_UPLOAD_STORE_FILE')) {
+                signingConfig signingConfigs.release
+            }
             def enableShrinkResources = findProperty('android.enableShrinkResourcesInReleaseBuilds') ?: 'false'
             shrinkResources enableShrinkResources.toBoolean()
             minifyEnabled enableMinifyInReleaseBuilds

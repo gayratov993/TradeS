@@ -1,4 +1,4 @@
-# Savdo-E — Video Generatsiya Promptlari
+# Savdo Go — Video Generatsiya Promptlari
 
 Quyidagi promptlarni istalgan AI video platformasiga (HeyGen, Runway, Pika, CapCut AI, Canva) copy-paste qilib ishlatsang bo'ladi.
 
@@ -7,13 +7,13 @@ Quyidagi promptlarni istalgan AI video platformasiga (HeyGen, Runway, Pika, CapC
 ## 🎯 ASOSIY PROMPT (universal — eng ko'p platformalarda ishlaydi)
 
 ```
-Create a vertical (9:16) 20-22 second promotional video for "Savdo-E" — a sales, POS, and inventory management platform for small and medium businesses across Central Asia (Uzbekistan, Kazakhstan, Tajikistan, Kyrgyzstan), serving 830,000+ entrepreneurs.
+Create a vertical (9:16) 20-22 second promotional video for "Savdo Go" — a sales, POS, and inventory management platform for small and medium businesses across Central Asia (Uzbekistan, Kazakhstan, Tajikistan, Kyrgyzstan), serving 830,000+ entrepreneurs.
 
 Brand colors: dark background #0E150F, primary neon green #2ECC71, secondary teal #1ABC9C. Style: modern, clean, "Cyber Organic" — premium tech aesthetic, bold sans-serif typography. All on-screen text in Uzbek language.
 
 ACT 1 — INTRODUCTION (0:00–0:05, slow elegant animation):
-Smooth fade/scale reveal of "Savdo-E" logo on dark background with soft green glow. Text fades in gracefully:
-"Savdo-E" (large bold title)
+Smooth fade/scale reveal of "Savdo Go" logo on dark background with soft green glow. Text fades in gracefully:
+"Savdo Go" (large bold title)
 "Savdo, POS va Ombor — bitta tizimda" (subtitle)
 Calm, premium pacing, like a product reveal.
 
@@ -31,7 +31,7 @@ ACT 3 — WHY IT MATTERS (0:14–0:20, confident punchy pacing):
 "830,000+ MDH tadbirkori uchun yaratilgan"
 
 CLOSING CTA (0:20–0:23):
-Savdo-E logo centered
+Savdo Go logo centered
 "Bepul boshlang — 0 so'm/oy"
 "Karta kerak emas"
 Tagline: "Savdo boshqaruvi sodda qilindi."
@@ -45,7 +45,7 @@ Motion: smooth easing in Act 1, snappier energetic easing in Act 2-3. Mobile-fir
 
 **Sahna 1 (0:00-0:05):**
 ```
-Dark background #0E150F, soft green glow. "Savdo-E" logo fades in with scale animation, then subtitle "Savdo, POS va Ombor — bitta tizimda" appears below. Premium, calm, Apple-style product reveal pacing.
+Dark background #0E150F, soft green glow. "Savdo Go" logo fades in with scale animation, then subtitle "Savdo, POS va Ombor — bitta tizimda" appears below. Premium, calm, Apple-style product reveal pacing.
 ```
 
 **Sahna 2 (0:05-0:14):**
@@ -55,7 +55,7 @@ Five animated feature cards appearing in sequence on dark background, neon green
 
 **Sahna 3 (0:14-0:23):**
 ```
-Bold confident text statements appear one by one: "Daftar va Telegram guruhlardan — tartibli tizimga", "Vaqtingizni tejaydi", "Xatoliklarni kamaytiradi", "830,000+ MDH tadbirkori uchun yaratilgan". Ends with Savdo-E logo, CTA button "Bepul boshlang — 0 so'm/oy", subtext "Karta kerak emas", tagline "Savdo boshqaruvi sodda qilindi."
+Bold confident text statements appear one by one: "Daftar va Telegram guruhlardan — tartibli tizimga", "Vaqtingizni tejaydi", "Xatoliklarni kamaytiradi", "830,000+ MDH tadbirkori uchun yaratilgan". Ends with Savdo Go logo, CTA button "Bepul boshlang — 0 so'm/oy", subtext "Karta kerak emas", tagline "Savdo boshqaruvi sodda qilindi."
 ```
 
 ---

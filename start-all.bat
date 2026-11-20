@@ -1,6 +1,6 @@
 @echo off
 echo ============================================
-echo        Savdo TradeS — Full Stack Launch
+echo        Savdo Savdo Go — Full Stack Launch
 echo ============================================
 echo.
 

@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "TradeS",
+    "name": "Savdo Go",
     "slug": "savdo",
     "owner": "x_crs7",
     "scheme": "savdo",
@@ -39,7 +39,7 @@
       [
         "expo-secure-store",
         {
-          "faceIDPermission": "Allow TradeS to use Face ID."
+          "faceIDPermission": "Allow Savdo Go to use Face ID."
         }
       ],
       [

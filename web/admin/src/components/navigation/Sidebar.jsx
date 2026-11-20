@@ -49,10 +49,10 @@ export function Sidebar({ open, onClose }) {
         {/* Brand */}
         <div className="px-6 mb-8 flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-surface-container-lowest border border-outline-variant flex items-center justify-center overflow-hidden shrink-0">
-            <img src="/logo.png" alt="TradeS" className="w-full h-full object-contain" />
+            <img src="/brand/savdo-go-icon.svg" alt="Savdo Go" className="w-full h-full object-contain" />
           </div>
           <div className="min-w-0">
-            <h1 className="font-display-lg text-primary font-bold leading-tight text-xl truncate">TradeS</h1>
+            <h1 className="font-display-lg text-primary font-bold leading-tight text-xl truncate">Savdo Go</h1>
             <p className="font-label-caps text-label-caps text-on-surface-variant">Savdo boshqaruvi</p>
           </div>
         </div>

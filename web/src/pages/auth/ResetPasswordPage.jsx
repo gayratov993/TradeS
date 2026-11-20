@@ -85,9 +85,9 @@ function Shell({ children, lang, i18n, langOpen, setLangOpen, t }) {
       {/* Navbar */}
       <nav className="relative z-10 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between border-b border-[#2ECC71]/10">
         <Link to="/" className="flex items-center gap-3">
-          <img src="/logo-dark.png" alt="TradeS" className="w-10 h-10 object-contain" />
+          <img src="/brand/savdo-go-icon.svg" alt="Savdo Go" className="w-10 h-10 object-contain" />
           <span className="text-xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-slate-400">
-            TradeS
+            Savdo Go
           </span>
         </Link>
 
@@ -127,11 +127,11 @@ function Shell({ children, lang, i18n, langOpen, setLangOpen, t }) {
       <footer className="border-t border-[#2ECC71]/10 bg-[#0E150F] py-8 text-center text-slate-500 text-xs relative z-10">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-2">
-            <img src="/logo-dark.png" alt="TradeS" className="w-6 h-6 object-contain" />
-            <span className="font-bold text-slate-400">TradeS</span>
+            <img src="/brand/savdo-go-icon.svg" alt="Savdo Go" className="w-6 h-6 object-contain" />
+            <span className="font-bold text-slate-400">Savdo Go</span>
           </div>
           <div>
-            &copy; {new Date().getFullYear()} TradeS. {t('copyright')}
+            &copy; {new Date().getFullYear()} Savdo Go. {t('copyright')}
           </div>
         </div>
       </footer>

@@ -326,7 +326,7 @@ export default function ProfileScreen() {
       </Section>
 
       <Text style={{ color: c.textMuted, textAlign: "center", fontSize: 12, marginTop: 16, opacity: 0.6 }}>
-        TradeS App © {new Date().getFullYear()}
+        Savdo Go App © {new Date().getFullYear()}
       </Text>
       <Text style={{ color: c.textMuted, textAlign: "center", fontSize: 11, marginTop: 2, marginBottom: 40, opacity: 0.5 }}>
         Powered by KarvonEx

@@ -1,4 +1,4 @@
-name: npm audit (backend, web, mobile)
+name: npm audit (backend, web, web/admin, mobile)
 
 on:
   pull_request:
@@ -11,7 +11,15 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        pkg-dir: [backend, web, mobile]
+        include:
+          - pkg-dir: backend
+            name: backend
+          - pkg-dir: web
+            name: web
+          - pkg-dir: web/admin
+            name: web-admin
+          - pkg-dir: mobile
+            name: mobile
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -34,7 +42,7 @@ jobs:
       - name: Upload audit result
         uses: actions/upload-artifact@v4
         with:
-          name: npm-audit-${{ matrix.pkg-dir }}
+          name: npm-audit-${{ matrix.name }}
           path: ${{ matrix.pkg-dir }}/audit-result.json
 
       - name: Fail on high/critical

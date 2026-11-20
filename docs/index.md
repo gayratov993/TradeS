@@ -1,6 +1,6 @@
 # Documentation Index
 
-All current English documentation for TradeS is linked from this page. Older files in `docs/` are kept as historical notes and may still mention the former project name or earlier infrastructure choices.
+All current English documentation for Savdo Go is linked from this page. Older files in `docs/` are kept as historical notes and may still mention the former project name or earlier infrastructure choices.
 
 ---
 
@@ -9,9 +9,10 @@ All current English documentation for TradeS is linked from this page. Older fil
 | File | Description |
 |---|---|
 | [../README.md](../README.md) | Project overview, setup, API, architecture, roadmap |
+| [USER_GUIDE_UZ.md](./USER_GUIDE_UZ.md) | O‘zbekcha foydalanish yo‘riqnomasi: tariflar, mijoz yaratish, POS ishlatish |
 | [COMPLETION_CHECKLIST.md](./COMPLETION_CHECKLIST.md) | All user-stated requirements, remaining work, acceptance criteria |
 | [LAYOUTS.md](./LAYOUTS.md) | Every web, admin, and mobile screen/layout in English |
-| [REPO_AUDIT.md](./REPO_AUDIT.md) | GitHub repository audit: missing items, failing checks, open work |
+| [REPO_AUDIT.md](./REPO_AUDIT.md) | Repository + full professional POS readiness audit: P0/P1/P2 findings, phased plan, failing checks |
 
 ---
 
@@ -39,8 +40,8 @@ All current English documentation for TradeS is linked from this page. Older fil
 - API base URL: `http://localhost:5000/api/v1`
 - Web POS: `http://localhost:5173`
 - Admin panel: `http://localhost:5174`
-- Repository: https://github.com/gayratov993/TradeS
+- Repository: https://github.com/gayratov993/savdo-go
 
 ---
 
-*TradeS — sales and professional POS management.*
+*Savdo Go — sales and professional POS management.*

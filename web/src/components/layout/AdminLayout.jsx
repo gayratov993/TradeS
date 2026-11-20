@@ -25,9 +25,9 @@ export default function AdminLayout() {
       {/* Sidebar */}
       <aside className="w-64 border-r bg-white dark:bg-gray-900 flex flex-col">
         <div className="flex items-center gap-2 px-6 py-5 border-b">
-          <img src="/logo.png" alt="TradeS" className="h-8 w-8 rounded-lg object-contain dark:hidden" />
-          <img src="/logo-dark.png" alt="TradeS" className="hidden h-8 w-8 rounded-lg object-contain dark:block" />
-          <span className="text-lg font-bold text-primary-600">TradeS</span>
+          <img src="/brand/savdo-go-icon.svg" alt="Savdo Go" className="h-8 w-8 rounded-lg object-contain dark:hidden" />
+          <img src="/brand/savdo-go-icon.svg" alt="Savdo Go" className="hidden h-8 w-8 rounded-lg object-contain dark:block" />
+          <span className="text-lg font-bold text-primary-600">Savdo Go</span>
           <span className="text-xs badge bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300">Admin</span>
         </div>
 

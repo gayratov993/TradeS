@@ -1,4 +1,4 @@
-# TradeS Screen and Layout Catalog
+# Savdo Go Screen and Layout Catalog
 
 This document lists every application screen in the repository, grouped by client. It is generated from the current router and page files (source reviewed on 2026-11-20). No Figma file or exported mockup images are stored in the repository, so this Markdown file is the canonical text catalog of the current layouts.
 
@@ -45,6 +45,7 @@ Legend:
 | `/dashboard/sales` | Sales | `pages/Sales.jsx` | Working | Sales history |
 | `/dashboard/reports` | Reports | `pages/Reports.jsx` | Working | Daily/monthly reports |
 | `/dashboard/settings` | Settings | `pages/Settings.jsx` | Working | Account/app settings |
+| `/dashboard/subscription` | My plan / usage | `pages/Subscription.jsx` | Working | Plan, limits, usage bars, plan change |
 | `/dashboard/profile` | Profile | `pages/Profile.jsx` | Working | User profile |
 
 ### Web admin screens (inside the web app)
@@ -63,7 +64,7 @@ Legend:
 | `/pos` | POS dashboard | `pages/pos/PosDashboard.jsx` | Working | Cashier home |
 | `/pos/products` | POS products | `pages/pos/PosProducts.jsx` | Working | Shows buy/sell prices; still global catalog, not per-store stock |
 | `/pos/sales` | POS sales | `pages/pos/PosSales.jsx` | Working | Sale history |
-| `/pos/sales/new` | New sale | `pages/pos/PosNewSale.jsx` | **Gap** | Single-item checkout; multi-item cart, payment screen, receipt and register shift not wired yet |
+| `/pos/sales/new` | New sale | `pages/pos/PosNewSale.jsx` | Working | Multi-item cart, cash/card payment, receipt, register shift, offline queue |
 | `/pos/reports` | POS reports | `pages/pos/PosReports.jsx` | Working | POS-specific reporting |
 
 Catch-all: `*` redirects to `/`.
@@ -91,7 +92,7 @@ Catch-all: `*` redirects to `/`.
 | `/users` | Users | `pages/users/UsersPage.jsx` | Working | User list |
 | `/users/:id` | User detail | `pages/users/UserDetailPage.jsx` | Working | User profile/edit |
 | `/admins` | Admins alias | `pages/users/UsersPage.jsx` | Alias | Same screen as `/users` |
-| `/customers` | Customers alias | `router/index.jsx` | Alias | Redirects to `/users` |
+| `/customers` | Customers and plans | `pages/customers/CustomersPage.jsx` | Working | Create customer, stores, registers, cashiers, plan changes, usage bars |
 | `/products` | Products | `pages/products/ProductsPage.jsx` | Working | Product administration |
 | `/orders` | Orders | `pages/orders/OrdersPage.jsx` | Working | Order administration |
 | `/support` | Support | `pages/support/SupportPage.jsx` | Working | Support requests |
@@ -165,7 +166,7 @@ These are present in the database schema but have no dedicated layout yet:
 | Receipt preview, print, PDF/share | Web POS + mobile | High |
 | Register shift open/close and cash drawer | Web POS + mobile | High |
 | Sale return / refund flow | Web POS + mobile | High |
-| Plan limit UI (stores, registers, users) | Web POS + admin + mobile | High |
+| Plan limit UI (stores, registers, users) | Mobile only (web/admin done) | Medium |
 | Per-store stock transfer/count (`StoreInventory`) | Web POS + mobile | Medium |
 | Purchase / supplier order flow | Web POS + admin + mobile | Medium |
 | Reset-password routed screen in web | Web | Low |

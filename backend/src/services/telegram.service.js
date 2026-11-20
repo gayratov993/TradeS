@@ -81,7 +81,7 @@ const LANGUAGE_PROMPT = 'Tilni tanlang / Выберите язык:';
 const STRINGS = {
   uz: {
     welcome:
-      'Assalomu alaykum! <b>TradeS</b> ga xush kelibsiz.\n\n' +
+      'Assalomu alaykum! <b>Savdo Go</b> ga xush kelibsiz.\n\n' +
       'Ro\'yxatdan o\'tish / kirish uchun tasdiqlash kodini shu yerga yuboramiz.\n' +
       'Boshlash uchun pastdagi <b>«📱 Raqamni ulashish»</b> tugmasini bosing.',
     contactButton: '📱 Raqamni ulashish',
@@ -93,7 +93,7 @@ const STRINGS = {
     supportSentAck: '✅ Xabaringiz qabul qilindi. Tez orada javob beramiz.',
     supportCooldown: 'Iltimos, biroz kuting va keyin qayta yozing.',
     help:
-      '<b>TradeS bot</b> — ilovaga kirish/ro\'yxatdan o\'tish uchun tasdiqlash kodlarini shu yerga yuboradi.\n\n' +
+      '<b>Savdo Go bot</b> — ilovaga kirish/ro\'yxatdan o\'tish uchun tasdiqlash kodlarini shu yerga yuboradi.\n\n' +
       'Buyruqlar:\n' +
       '/start — qaytadan boshlash (til tanlash)\n' +
       '/language — tilni o\'zgartirish\n' +
@@ -104,7 +104,7 @@ const STRINGS = {
   },
   ru: {
     welcome:
-      'Здравствуйте! Добро пожаловать в <b>TradeS</b>.\n\n' +
+      'Здравствуйте! Добро пожаловать в <b>Savdo Go</b>.\n\n' +
       'Для регистрации/входа мы отправим код подтверждения сюда.\n' +
       'Чтобы начать, нажмите кнопку <b>«📱 Поделиться номером»</b> внизу.',
     contactButton: '📱 Поделиться номером',
@@ -116,7 +116,7 @@ const STRINGS = {
     supportSentAck: '✅ Ваше сообщение принято. Скоро ответим.',
     supportCooldown: 'Пожалуйста, подождите немного и напишите снова.',
     help:
-      '<b>TradeS бот</b> — присылает коды подтверждения для входа/регистрации в приложении.\n\n' +
+      '<b>Savdo Go бот</b> — присылает коды подтверждения для входа/регистрации в приложении.\n\n' +
       'Команды:\n' +
       '/start — начать заново (выбор языка)\n' +
       '/language — сменить язык\n' +

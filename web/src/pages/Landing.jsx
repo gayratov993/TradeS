@@ -29,6 +29,12 @@ const translations = {
     dashboard: "Kabinetga o'tish",
     features: "Imkoniyatlar",
     stats: "Statistika",
+    pricing: "Tariflar",
+    pricingTitle: "Do‘koningizga mos tarifni tanlang",
+    pricingSubtitle: "30 kun bepul sinov. Karta kerak emas.",
+    monthly: "oyiga",
+    popular: "Ommabop",
+    choose: "Tanlash",
     faq: "Ko'p so'raladigan savollar",
     feature1Title: "Offline-First POS",
     feature1Desc: "Internet o'chib qolganda ham savdoni to'xtatmang. Tizim avtomatik ravishda ma'lumotlarni sinxronizatsiya qiladi.",
@@ -60,6 +66,12 @@ const translations = {
     dashboard: "В личный кабинет",
     features: "Возможности",
     stats: "Статистика",
+    pricing: "Тарифы",
+    pricingTitle: "Выберите тариф для вашего магазина",
+    pricingSubtitle: "30 дней бесплатно. Без банковской карты.",
+    monthly: "в месяц",
+    popular: "Популярный",
+    choose: "Выбрать",
     faq: "Частые вопросы",
     feature1Title: "Offline-First POS",
     feature1Desc: "Не останавливайте продажи при сбое интернета. Система автоматически синхронизирует данные при подключении.",
@@ -91,6 +103,12 @@ const translations = {
     dashboard: "Go to Dashboard",
     features: "Features",
     stats: "Statistics",
+    pricing: "Pricing",
+    pricingTitle: "Choose the right plan for your store",
+    pricingSubtitle: "30-day free trial. No credit card required.",
+    monthly: "/ month",
+    popular: "Popular",
+    choose: "Choose",
     faq: "FAQ",
     feature1Title: "Offline-First POS",
     feature1Desc: "Keep selling even when the internet goes down. The system automatically syncs data once reconnected.",
@@ -115,6 +133,72 @@ const translations = {
   }
 };
 
+const pricingPlans = {
+  uz: [
+    {
+      code: "BASIC",
+      name: "Starter",
+      price: "249 000",
+      features: ["1 filial", "3 kassirgacha", "Oflayn kassa", "Soliq.uz integratsiyasi", "Telegram hisoboti", "Shtrix-kod skanerlash"],
+    },
+    {
+      code: "STANDARD",
+      name: "Growth",
+      price: "449 000",
+      popular: true,
+      features: ["3 filialgacha", "10 kassirgacha", "AI Night Cashier", "Chegirma tizimi", "Mobil ilova", "API kirish"],
+    },
+    {
+      code: "PRO",
+      name: "Pro",
+      price: "799 000",
+      features: ["Cheksiz filial", "Cheksiz kassir", "To‘liq API", "1C integratsiyasi", "Shaxsiy menejer", "Priority support"],
+    },
+  ],
+  ru: [
+    {
+      code: "BASIC",
+      name: "Starter",
+      price: "249 000",
+      features: ["1 филиал", "До 3 кассиров", "Офлайн-касса", "Интеграция Soliq.uz", "Telegram-отчёты", "Сканирование штрихкода"],
+    },
+    {
+      code: "STANDARD",
+      name: "Growth",
+      price: "449 000",
+      popular: true,
+      features: ["До 3 филиалов", "До 10 кассиров", "AI Night Cashier", "Система скидок", "Мобильное приложение", "Доступ к API"],
+    },
+    {
+      code: "PRO",
+      name: "Pro",
+      price: "799 000",
+      features: ["Безлимитные филиалы", "Безлимитные кассиры", "Полный API", "Интеграция 1C", "Личный менеджер", "Priority support"],
+    },
+  ],
+  en: [
+    {
+      code: "BASIC",
+      name: "Starter",
+      price: "249 000",
+      features: ["1 branch", "Up to 3 cashiers", "Offline POS", "Soliq.uz integration", "Telegram reports", "Barcode scanning"],
+    },
+    {
+      code: "STANDARD",
+      name: "Growth",
+      price: "449 000",
+      popular: true,
+      features: ["Up to 3 branches", "Up to 10 cashiers", "AI Night Cashier", "Discount system", "Mobile app", "API access"],
+    },
+    {
+      code: "PRO",
+      name: "Pro",
+      price: "799 000",
+      features: ["Unlimited branches", "Unlimited cashiers", "Full API", "1C integration", "Personal manager", "Priority support"],
+    },
+  ],
+};
+
 export default function Landing() {
   const { i18n } = useTranslation();
   const navigate = useNavigate();
@@ -124,6 +208,7 @@ export default function Landing() {
 
   const currentLang = i18n.language || 'uz';
   const t = (key) => translations[currentLang]?.[key] || translations['uz']?.[key] || key;
+  const plans = pricingPlans[currentLang] || pricingPlans.uz;
 
   const handleLanguageChange = (lang) => {
     i18n.changeLanguage(lang);
@@ -148,15 +233,16 @@ export default function Landing() {
       <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-[#0E150F]/80 border-b border-[#2ECC71]/10 transition-all duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img src="/logo-dark.png" alt="TradeS" className="w-10 h-10 object-contain" />
+            <img src="/brand/savdo-go-icon.svg" alt="Savdo Go" className="w-10 h-10 object-contain" />
             <span className="text-xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-slate-400">
-              TradeS
+              Savdo Go
             </span>
           </div>
 
           <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
             <a href="#features" className="hover:text-white transition-colors">{t('features')}</a>
             <a href="#stats" className="hover:text-white transition-colors">{t('stats')}</a>
+            <a href="#pricing" className="hover:text-white transition-colors">{t('pricing')}</a>
             <a href="#faq" className="hover:text-white transition-colors">{t('faq')}</a>
           </div>
 
@@ -297,7 +383,7 @@ export default function Landing() {
                 <span className="w-3 h-3 rounded-full bg-red-500/25" />
                 <span className="w-3 h-3 rounded-full bg-yellow-500/25" />
                 <span className="w-3 h-3 rounded-full bg-green-500/25" />
-                <span className="ml-4 font-semibold text-slate-400">savdo-pos-dashboard.app</span>
+                <span className="ml-4 font-semibold text-slate-400">Savdo Go POS</span>
               </div>
               <div className="flex items-center gap-3">
                 <span className="px-2.5 py-1 rounded-full bg-[#2ECC71]/10 text-[#2ECC71] font-bold flex items-center gap-1">
@@ -445,6 +531,58 @@ export default function Landing() {
         </div>
       </section>
 
+      <section id="pricing" className="py-24 border-t border-[#2ECC71]/10 bg-[#0B120E]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <p className="text-xs font-black uppercase tracking-[0.2em] text-[#2ECC71] mb-3">{t('pricing')}</p>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-4">{t('pricingTitle')}</h2>
+            <p className="text-slate-400 text-lg">{t('pricingSubtitle')}</p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {plans.map((plan) => (
+              <div
+                key={plan.code}
+                className={`relative p-8 rounded-2xl border flex flex-col ${
+                  plan.popular
+                    ? 'border-[#2ECC71] bg-[#2ECC71]/5 shadow-2xl shadow-[#2ECC71]/10'
+                    : 'border-[#2ECC71]/10 bg-[#1ABC9C]/5'
+                }`}
+              >
+                {plan.popular && (
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-[#2ECC71] text-slate-950 text-xs font-black uppercase tracking-widest">
+                    {t('popular')}
+                  </span>
+                )}
+                <p className="text-sm font-black uppercase tracking-widest text-[#2ECC71]">{plan.name}</p>
+                <p className="mt-4 text-4xl font-extrabold text-white">
+                  {plan.price} <span className="text-base font-semibold text-slate-400">so‘m {t('monthly')}</span>
+                </p>
+                <div className="my-6 h-px bg-[#2ECC71]/10" />
+                <ul className="space-y-3 flex-1">
+                  {plan.features.map((feature) => (
+                    <li key={feature} className="flex items-center gap-3 text-sm text-slate-300">
+                      <CheckCircle className="w-4 h-4 text-[#2ECC71] flex-shrink-0" />
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+                <button
+                  onClick={() => navigate(user ? '/dashboard' : '/register')}
+                  className={`mt-8 w-full py-3 rounded-xl text-sm font-black transition-all ${
+                    plan.popular
+                      ? 'bg-[#2ECC71] hover:bg-[#2ecc71]/90 text-slate-950'
+                      : 'border border-[#2ECC71]/30 text-white hover:border-[#2ECC71] hover:bg-[#2ECC71]/10'
+                  }`}
+                >
+                  {t('choose')}
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* FAQ Section */}
       <section id="faq" className="py-24 border-t border-[#2ECC71]/10 bg-[#0E150F]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -510,11 +648,11 @@ export default function Landing() {
       <footer className="py-12 border-t border-[#2ECC71]/10 bg-[#0E150F] text-slate-500 text-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-2">
-            <img src="/logo-dark.png" alt="TradeS" className="w-6 h-6 object-contain" />
-            <span className="font-bold text-slate-400">TradeS</span>
+            <img src="/brand/savdo-go-icon.svg" alt="Savdo Go" className="w-6 h-6 object-contain" />
+            <span className="font-bold text-slate-400">Savdo Go</span>
           </div>
           <div>
-            &copy; {new Date().getFullYear()} TradeS. {t('copyright')}
+            &copy; {new Date().getFullYear()} Savdo Go. {t('copyright')}
           </div>
         </div>
       </footer>

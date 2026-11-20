@@ -29,6 +29,7 @@ import Reports from './pages/Reports';
 import Settings from './pages/Settings';
 import Profile from './pages/Profile';
 import Landing from './pages/Landing';
+import Subscription from './pages/Subscription';
 
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminUsers from './pages/admin/AdminUsers';
@@ -107,6 +108,7 @@ export default function App() {
           <Route path="sales" element={<Sales />} />
           <Route path="reports" element={<Reports />} />
           <Route path="settings" element={<Settings />} />
+          <Route path="subscription" element={<Subscription />} />
           <Route path="profile" element={<Profile />} />
 
           {/* Admin-only routes */}

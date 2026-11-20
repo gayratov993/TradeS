@@ -1,7 +1,7 @@
 export const uz = {
   app: {
-    name: "TradeS",
-    description: "TradeS uchun role-based admin va super admin paneli"
+    name: "Savdo Go",
+    description: "Savdo Go uchun role-based admin va super admin paneli"
   },
   common: {
     close: "Yopish",
@@ -199,7 +199,7 @@ export const uz = {
     }
   },
   auth: {
-    heroEyebrow: "TradeS boshqaruv markazi",
+    heroEyebrow: "Savdo Go boshqaruv markazi",
     heroTitle: "Admin va Super Admin panel starti tayyor.",
     heroDescription:
       "Hozircha demo auth ishlaydi. Keyin bu flow `POST /auth/login`, `POST /auth/refresh` va `GET /me` bilan ulanadi.",

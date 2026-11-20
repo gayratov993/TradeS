@@ -131,7 +131,7 @@ export default function LoginScreen() {
         {/* Header: logo + brand */}
         <View style={{ alignItems: "center", marginBottom: 32 }}>
           <Image source={require("@/assets/logo.png")} style={{ width: 96, height: 96, marginBottom: 12 }} resizeMode="contain" />
-          <Text style={{ color: c.primary, fontSize: 28, fontWeight: "700", letterSpacing: 1 }}>TradeS</Text>
+          <Text style={{ color: c.primary, fontSize: 28, fontWeight: "700", letterSpacing: 1 }}>Savdo Go</Text>
           <Text style={{ color: c.textMuted, fontSize: 14, marginTop: 4 }}>Boshqaruv tizimi</Text>
         </View>
 

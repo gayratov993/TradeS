@@ -151,4 +151,4 @@ server {
 ---
 
 *Yozilgan sana: 2026-04-03*  
-*Loyiha: Savdo-E Admin Panel*
+*Loyiha: Savdo Go Admin Panel*

@@ -7,17 +7,22 @@ function simpleHash(s: string): string {
   return (h >>> 0).toString(36);
 }
 
+type AuthLostListener = () => void | Promise<void>;
+const authLostListeners = new Set<AuthLostListener>();
+
 interface AuthState {
   token: string | null;
   refreshToken: string | null;
   loadToken: () => Promise<void>;
   setToken: (token: string, refreshToken: string) => Promise<void>;
   clearToken: () => Promise<void>;
+  onAuthLost: (listener: AuthLostListener) => () => void;
+  handleAuthLost: () => Promise<void>;
   saveEmailCredentials: (email: string, password: string, token: string, refresh: string) => Promise<void>;
   verifyEmailOffline: (email: string, password: string) => Promise<string | null>;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
+export const useAuthStore = create<AuthState>((set, get) => ({
   token: null,
   refreshToken: null,
 
@@ -40,6 +45,16 @@ export const useAuthStore = create<AuthState>((set) => ({
     secureStorage.delete("emailHash").catch(() => {});
     secureStorage.delete("emailToken").catch(() => {});
     secureStorage.delete("emailRefresh").catch(() => {});
+  },
+
+  onAuthLost: (listener) => {
+    authLostListeners.add(listener);
+    return () => authLostListeners.delete(listener);
+  },
+
+  handleAuthLost: async () => {
+    await Promise.all([...authLostListeners].map((listener) => Promise.resolve(listener())));
+    await get().clearToken();
   },
 
   saveEmailCredentials: async (email, password, token, refresh) => {

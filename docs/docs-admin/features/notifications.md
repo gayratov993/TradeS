@@ -106,7 +106,7 @@ src/
 if (Notification.permission === 'granted') {
   new Notification('Yangi buyurtma!', {
     body: 'Abdulloh 150,000 so\'mlik buyurtma qildi',
-    icon: '/logo.png'
+    icon: '/brand/savdo-go-icon.svg'
   })
 }
 ```

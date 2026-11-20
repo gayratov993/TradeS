@@ -308,7 +308,7 @@ export default function Settings() {
           <div className="divide-y divide-[#E2E8F0] dark:divide-[#334155]">
             <div className="flex items-center justify-between px-5 py-4">
               <span className="text-sm font-medium text-[#0F172A] dark:text-slate-100">{t('app_name')}</span>
-              <span className="text-sm font-extrabold text-green-600 tracking-tight">TradeS</span>
+              <span className="text-sm font-extrabold text-green-600 tracking-tight">Savdo Go</span>
             </div>
             <div className="flex items-center justify-between px-5 py-4">
               <span className="text-sm font-medium text-[#0F172A] dark:text-slate-100">{t('version')}</span>

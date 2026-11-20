@@ -10,6 +10,7 @@ import { ReportsPage } from "../pages/reports/ReportsPage";
 import { SettingsPage } from "../pages/settings/SettingsPage";
 import { UserDetailPage } from "../pages/users/UserDetailPage";
 import { UsersPage } from "../pages/users/UsersPage";
+import { CustomersPage } from "../pages/customers/CustomersPage";
 import { RolesPage } from "../pages/roles/RolesPage";
 import { PermissionsPage } from "../pages/permissions/PermissionsPage";
 import { ProductsPage } from "../pages/products/ProductsPage";
@@ -55,7 +56,7 @@ export function AppRouter() {
           <Route path="/products" element={<ProductsPage />} />
           <Route path="/orders" element={<OrdersPage />} />
           <Route path="/support" element={<SupportPage />} />
-          <Route path="/customers" element={<Navigate to="/users" replace />} />
+          <Route path="/customers" element={<CustomersPage />} />
           <Route path="/content" element={<ContentPage />} />
           <Route path="/reports" element={<ReportsPage />} />
           <Route path="/roles" element={<RolesPage />} />

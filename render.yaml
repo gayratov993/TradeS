@@ -1,5 +1,5 @@
-# Render Blueprint — TradeS backend (Express + Prisma → Neon Postgres)
-# Deploy: Render dashboard → New → Blueprint → pick the gayratov993/TradeS repo.
+# Render Blueprint — Savdo Go backend (Express + Prisma → Neon Postgres)
+# Deploy: Render dashboard → New → Blueprint → pick the gayratov993/savdo-go repo.
 # Secrets (sync:false) are entered in the dashboard during deploy — never committed here.
 services:
   - type: web

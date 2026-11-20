@@ -6,7 +6,7 @@ const logger = require('../utils/logger');
 // testable end-to-end without a provider. This mirrors telegram.service's role for
 // the phone channel.
 
-const FROM = process.env.RESEND_FROM || 'TradeS <onboarding@resend.dev>';
+const FROM = process.env.RESEND_FROM || 'Savdo Go <onboarding@resend.dev>';
 const WEB_URL = process.env.WEB_URL || 'http://localhost:5173';
 
 const isConfigured = () => !!process.env.RESEND_API_KEY;
@@ -42,10 +42,10 @@ const sendEmail = async (to, subject, html) => {
 };
 
 const sendCode = async (email, code) => {
-  const subject = 'TradeS tasdiqlash kodi';
+  const subject = 'Savdo Go tasdiqlash kodi';
   const html = `
     <div style="font-family:sans-serif;max-width:420px;margin:auto">
-      <h2 style="margin:0 0 8px">TradeS</h2>
+      <h2 style="margin:0 0 8px">Savdo Go</h2>
       <p>Tasdiqlash kodingiz:</p>
       <p style="font-size:30px;font-weight:800;letter-spacing:6px;margin:12px 0">${code}</p>
       <p style="color:#666">Kod 5 daqiqa amal qiladi. Hech kimga bermang.</p>
@@ -55,10 +55,10 @@ const sendCode = async (email, code) => {
 
 const sendResetToken = async (email, token) => {
   const link = `${WEB_URL}/reset-password?token=${token}`;
-  const subject = 'TradeS — parolni tiklash';
+  const subject = 'Savdo Go — parolni tiklash';
   const html = `
     <div style="font-family:sans-serif;max-width:420px;margin:auto">
-      <h2 style="margin:0 0 8px">TradeS</h2>
+      <h2 style="margin:0 0 8px">Savdo Go</h2>
       <p>Parolni tiklash uchun quyidagi havolaga o'ting:</p>
       <p><a href="${link}">${link}</a></p>
       <p style="color:#666">Havola 30 daqiqa amal qiladi. Agar bu siz bo'lmasangiz, e'tibor bermang.</p>

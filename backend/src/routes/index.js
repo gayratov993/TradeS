@@ -17,6 +17,10 @@ const contentRoutes = require('./content.routes');
 const telegramRoutes = require('./telegram.routes');
 const settingsRoutes = require('./settings.routes');
 const supportRoutes = require('./support.routes');
+const tenantRoutes = require('./tenant.routes');
+const posRoutes = require('./pos.routes');
+const plansRoutes = require('./plans.routes');
+const subscriptionRoutes = require('./subscriptions.routes');
 
 router.use('/auth', authRoutes);
 router.use('/users', userRoutes);
@@ -34,5 +38,9 @@ router.use('/content', contentRoutes);
 router.use('/telegram', telegramRoutes);
 router.use('/settings', settingsRoutes);
 router.use('/support', supportRoutes);
+router.use('/tenant', tenantRoutes);
+router.use('/pos', posRoutes);
+router.use('/plans', plansRoutes);
+router.use('/subscriptions', subscriptionRoutes);
 
 module.exports = router;

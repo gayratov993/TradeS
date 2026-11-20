@@ -1,10 +1,10 @@
-# TradeS Completion Checklist
+# Savdo Go Completion Checklist
 
 Status: **IN PROGRESS — not complete yet.**
 
-This is the single source of truth for what the user asked for, what is already done, and what still has to be finished before TradeS can be called a complete professional POS platform. It is intentionally written in English, matching the current GitHub documentation.
+This is the single source of truth for what the user asked for, what is already done, and what still has to be finished before Savdo Go can be called a complete professional POS platform. It is intentionally written in English, matching the current GitHub documentation.
 
-Last updated: 2026-11-20.
+Last updated: 2026-11-20. For the code-level audit behind this checklist, see [REPO_AUDIT.md §6](./REPO_AUDIT.md#6-full-professional-pos-readiness-audit-2026-11-20).
 
 ---
 
@@ -17,10 +17,10 @@ Last updated: 2026-11-20.
 | Organizations, stores, registers, plans in the database | Done |
 | Web POS, admin panel, mobile app basic screens | Working |
 | English README, layouts catalog, repository audit | Done |
-| Multi-item POS checkout in web + mobile | **Not done** |
-| Payment screen, change calculation, receipt print/share | **Not done** |
-| Register shifts, returns, per-store inventory operations | **Not done** |
-| Plan limits enforced in code/UI | **Not done** |
+| Multi-item POS checkout in web + mobile | Done in web; mobile wired |
+| Payment screen, change calculation, receipt print/share | Payment/receipt screens done; print/share pending |
+| Register shifts, returns, per-store inventory operations | Backend runtime done; dedicated UI pending |
+| Plan limits enforced in code/UI | Backend + web/admin + customer subscription UI done |
 | Production email OTP, real Telegram phone link, live deploy | **Not done** |
 | CI build/test, branch protection, release/tag | **Not done** |
 
@@ -30,19 +30,20 @@ Last updated: 2026-11-20.
 
 ### 2.1 Subscription and POS decisions
 
-- [x] `BASIC`: 1 store, 3 registers.
-- [x] `STANDARD`: up to 3 stores.
-- [x] `PRO`: up to 10 branches.
+- [x] `BASIC` / Starter: 1 store, 3 registers, 249,000 so‘m/oy.
+- [x] `STANDARD` / Growth: up to 3 stores, 10 cashiers, 449,000 so‘m/oy.
+- [x] `PRO` / Pro: effectively unlimited branches/cashiers, 799,000 so‘m/oy.
 - [x] Cash and card payments must produce a receipt.
 - [x] Build the data model for a professional POS.
 - [x] Create Prisma schema and migrations.
-- [ ] Enforce the plan limits in backend services and UI, not only in the seed.
-- [ ] Make the cash/card receipt flow reachable from the actual checkout screen.
+- [x] Enforce the plan limits in backend services, admin onboarding UI and customer subscription screen.
+- [x] Make the cash/card receipt flow reachable from the actual checkout screen.
 
 Acceptance criteria:
-- Creating a 2nd store on `BASIC` returns a clear API error and a UI message.
-- Creating a 4th register in one store on `BASIC` is blocked.
-- Choosing cash, card, or mixed payment in the POS creates a `Payment` and a printable receipt.
+- Creating a 2nd store on `BASIC` returns a clear API error and is shown in the admin UI.
+- Creating a 4th register in one store on `BASIC` is blocked by the API.
+- Choosing cash or card in the POS creates a `Payment` and a receipt screen; print/share is still pending.
+- Live owner-flow smoke verified `OWNER` + 3 registers + 3 cashiers on BASIC, with 2nd store / 4th register / 4th cashier blocked by `409`.
 
 ### 2.2 GitHub and documentation requests
 
@@ -227,7 +228,7 @@ Current audit details: [REPO_AUDIT.md](./REPO_AUDIT.md)
 
 ## 8. Definition of "project complete"
 
-TradeS can be called complete only when:
+Savdo Go can be called complete only when:
 
 - A cashier can open a shift, sell multiple items, take cash/card/mixed payment, give change, print/share a receipt, and close the shift.
 - A manager can return items, see correct reports, manage per-store stock, and stay within the subscription limits.

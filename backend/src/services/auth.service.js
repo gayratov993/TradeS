@@ -165,7 +165,7 @@ const challengeNewDevice = async (user) => {
 
   await telegramService.sendMessage(
     record.telegramChatId,
-    `⚠️ <b>TradeS</b> — yangi qurilmadan kirish\n\nTanilmagan qurilmadan hisobingizga kirishga urinish qayd etildi. Agar bu siz bo'lsangiz, tasdiqlash kodi:\n\n<code>${code}</code>\n\nKod ${OTP_EXPIRES_MIN} daqiqa amal qiladi. Bu siz emasligini bilsangiz, parolingizni darhol o'zgartiring.`
+    `⚠️ <b>Savdo Go</b> — yangi qurilmadan kirish\n\nTanilmagan qurilmadan hisobingizga kirishga urinish qayd etildi. Agar bu siz bo'lsangiz, tasdiqlash kodi:\n\n<code>${code}</code>\n\nKod ${OTP_EXPIRES_MIN} daqiqa amal qiladi. Bu siz emasligini bilsangiz, parolingizni darhol o'zgartiring.`
   );
 
   return { requiresDeviceConfirmation: true, message: 'Yangi qurilma aniqlandi — Telegramga yuborilgan kodni kiriting' };
@@ -512,7 +512,7 @@ const requestOtp = async (rawPhone, reason = 'register') => {
 
     await telegramService.sendMessage(
       record.telegramChatId,
-      `🔐 <b>TradeS</b> — ${reasonText}:\n\n<code>${code}</code>\n\nKod ${OTP_EXPIRES_MIN} daqiqa amal qiladi. Hech kimga bermang.`
+      `🔐 <b>Savdo Go</b> — ${reasonText}:\n\n<code>${code}</code>\n\nKod ${OTP_EXPIRES_MIN} daqiqa amal qiladi. Hech kimga bermang.`
     );
 
     return { message: 'Kod Telegram orqali yuborildi' };
@@ -616,10 +616,8 @@ const forgotPassword = async (email) => {
   });
 
   // Send the reset link by email (real via Resend when configured; otherwise a
-  // dev no-op that logs). Also log the token and, when email isn't configured in
-  // non-production, return it so the flow stays testable end-to-end.
-  const logger = require('../utils/logger');
-  logger.info(`Password reset token for ${email}: ${rawToken} (valid ${PASSWORD_RESET_EXPIRES_MIN}m)`);
+  // dev no-op). Never log the raw token: production logs are persisted to disk.
+  // When email is not configured in non-production, the response carries it instead.
   await emailService.sendResetToken(email, rawToken);
 
   const result = { message: genericMessage };
@@ -692,7 +690,7 @@ const forgotPasswordByPhone = async (rawPhone) => {
     });
     await telegramService.sendMessage(
       record.telegramChatId,
-      `🔐 <b>TradeS</b> parol tiklash kodi:\n\n<code>${code}</code>\n\nKod ${OTP_EXPIRES_MIN} daqiqa amal qiladi. Hech kimga bermang.`
+      `🔐 <b>Savdo Go</b> parol tiklash kodi:\n\n<code>${code}</code>\n\nKod ${OTP_EXPIRES_MIN} daqiqa amal qiladi. Hech kimga bermang.`
     );
   }
 

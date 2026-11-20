@@ -1,6 +1,6 @@
-# TradeS — Sales and Professional POS Management Platform
+# Savdo Go — Sales and Professional POS Management Platform
 
-TradeS is an offline-first sales management system built for the Uzbekistan and CIS retail market. One monorepo contains the **backend API**, **web POS**, **admin panel**, and **Expo mobile app**.
+Savdo Go is an offline-first sales management system built for the Uzbekistan and CIS retail market. One monorepo contains the **backend API**, **web POS**, **admin panel**, and **Expo mobile app**.
 
 The goal is to give businesses from a single shop to 10 branches one system for products, sales, reports, staff, cash registers, and subscriptions.
 
@@ -21,7 +21,7 @@ The goal is to give businesses from a single shop to 10 branches one system for 
 
 > Latest major change: `Plan`, `Organization`, `Store`, `Register`, `SaleTransaction`, `Payment`, `RegisterShift`, `Return`, and `StoreInventory` models were added to the Prisma schema and applied to the database.
 
-See [docs/REPO_AUDIT.md](./docs/REPO_AUDIT.md) for the current GitHub repository audit, including known gaps and failing checks.
+See [docs/REPO_AUDIT.md](./docs/REPO_AUDIT.md) for the current repository and professional POS readiness audit, including P0/P1/P2 gaps, applied Phase 0 security hotfixes, and remaining CI checks.
 
 ---
 
@@ -69,14 +69,14 @@ See [docs/REPO_AUDIT.md](./docs/REPO_AUDIT.md) for the current GitHub repository
 
 `npm run seed:pos` creates three plans:
 
-| Plan | Stores | Registers per store | Users | Monthly price |
-|---|---:|---:|---:|---:|
-| `BASIC` | 1 | 3 | 3 | 0 UZS |
-| `STANDARD` | 3 | 5 | 10 | 99,000 UZS |
-| `PRO` | 10 | 10 | 50 | 299,000 UZS |
+| Plan | Stores | Registers/store | Members (incl. owner) | Cashiers | Monthly price |
+|---|---:|---:|---:|---:|---:|
+| `BASIC` / Starter | 1 | 3 | 4 | 3 | 249,000 UZS |
+| `STANDARD` / Growth | 3 | 10 | 11 | 10 | 449,000 UZS |
+| `PRO` / Pro | 9999 | 9999 | 9999 | 9999 | 799,000 UZS |
 
 The seed also creates:
-- the `TradeS` organization (`slug: trades-main`),
+- the `Savdo Go` organization (`slug: trades-main`),
 - the main store (`MAIN-001`),
 - `Register 1`, `Register 2`, `Register 3`,
 - the admin user as `OWNER` of the organization,
@@ -102,7 +102,7 @@ The seed also creates:
 ## 5. Repository structure
 
 ```text
-TradeS/
+Savdo Go/
 ├── backend/
 │   ├── prisma/
 │   │   ├── schema.prisma
@@ -370,9 +370,10 @@ Required production environment variables:
 
 ## 13. Documentation
 
+- [O‘zbekcha foydalanish yo‘riqnomasi](./docs/USER_GUIDE_UZ.md) — tariflar, mijoz yaratish, kassa/kassir berish, POS dan foydalanish.
 - [Completion checklist](./docs/COMPLETION_CHECKLIST.md) — all user-stated requirements, remaining work and acceptance criteria.
 - [Screen and layout catalog](./docs/LAYOUTS.md) — every web, admin, and mobile screen in English.
-- [Repository audit](./docs/REPO_AUDIT.md) — GitHub status, missing items, failing checks.
+- [Repository and POS readiness audit](./docs/REPO_AUDIT.md) — GitHub status, P0/P1/P2 POS gaps, phased plan, failing checks.
 - [Docs index](./docs/index.md) — technical documentation index.
 
 ---
@@ -381,4 +382,4 @@ Required production environment variables:
 
 MIT — free to use and modify. See [LICENSE](./LICENSE).
 
-**TradeS — simple, fast, and reliable sales management.**
+**Savdo Go — simple, fast, and reliable sales management.**

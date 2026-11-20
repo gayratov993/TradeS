@@ -8,8 +8,22 @@ import { Product } from "@/db/models/Product";
 import { useProducts } from "@/hooks/useProducts";
 import { useT } from "@/hooks/useT";
 import { useTheme } from "@/hooks/useTheme";
+import {
+  createTransaction,
+  ensurePosContext,
+  getActiveShift,
+  openShift,
+} from "@/services/pos";
 
-type SaleResult = { name: string; qty: number; totalAmount: number; profit: number };
+type SaleResult = {
+  name: string;
+  qty: number;
+  totalAmount: number;
+  profit: number;
+  receiptNumber?: string;
+  saleNumber?: string;
+  changeAmount?: number;
+};
 
 export default function AddSaleScreen() {
   const t = useT();
@@ -30,32 +44,77 @@ export default function AddSaleScreen() {
   const totalAmount = selected ? selected.sellPrice * qtyNum : 0;
   const totalProfit = selected ? (selected.sellPrice - selected.buyPrice) * qtyNum : 0;
 
+  async function persistOfflineSale() {
+    if (!selected) return;
+    await database.write(async () => {
+      await salesCollection.create((s) => {
+        s.productId = selected.id;
+        s.productName = selected.name;
+        s.qty = qtyNum;
+        s.sellPrice = selected.sellPrice;
+        s.profit = totalProfit;
+        s.note = null;
+        s.soldAt = Date.now();
+        s.isSynced = false;
+        s.serverId = null;
+      });
+      await selected.update((p) => {
+        p.stockQty = Math.max(0, p.stockQty - qtyNum);
+        p.isSynced = false;
+      });
+    });
+    setResult({ name: selected.name, qty: qtyNum, totalAmount, profit: totalProfit });
+  }
+
   async function doSale() {
     if (!selected) return;
     setSaving(true);
     try {
+      if (!selected.serverId) {
+        throw new Error("OFFLINE_FALLBACK");
+      }
+      const context = await ensurePosContext();
+      let shift = null;
+      try {
+        shift = await getActiveShift(context);
+      } catch (shiftError: any) {
+        if (shiftError?.response?.status !== 404) throw shiftError;
+      }
+      if (!shift) {
+        await openShift(context, 0);
+      }
+      const transaction = await createTransaction(context, {
+        items: [{ productId: selected.serverId, quantity: qtyNum }],
+        payments: [{ method: "CASH", amount: totalAmount }],
+      });
       await database.write(async () => {
-        await salesCollection.create((s) => {
-          s.productId = selected.id;
-          s.productName = selected.name;
-          s.qty = qtyNum;
-          s.sellPrice = selected.sellPrice;
-          s.profit = totalProfit;
-          s.note = null;
-          s.soldAt = Date.now();
-          s.isSynced = false;
-          s.serverId = null;
-        });
         await selected.update((p) => {
-          // Manfiy stok bo'lmasin (audit: HIGH H2) — handleSale allaqachon oldindan
-          // tekshiradi, bu esa poyga holati (race condition)ga qarshi qo'shimcha himoya.
           p.stockQty = Math.max(0, p.stockQty - qtyNum);
           p.isSynced = false;
         });
       });
-      setResult({ name: selected.name, qty: qtyNum, totalAmount, profit: totalProfit });
-    } catch {
-      Alert.alert(t.common.error, t.common.saveError);
+      setResult({
+        name: selected.name,
+        qty: qtyNum,
+        totalAmount,
+        profit: totalProfit,
+        receiptNumber: transaction?.receiptNumber,
+        saleNumber: transaction?.saleNumber,
+        changeAmount: transaction?.changeAmount,
+      });
+    } catch (error: any) {
+      if (error?.message === "OFFLINE_FALLBACK" || !error?.response) {
+        try {
+          await persistOfflineSale();
+        } catch {
+          Alert.alert(t.common.error, t.common.saveError);
+        }
+        return;
+      }
+      Alert.alert(
+        t.common.error,
+        error?.response?.data?.message || t.common.saveError
+      );
     } finally {
       setSaving(false);
     }
@@ -103,6 +162,11 @@ export default function AddSaleScreen() {
         <Text style={{ color: c.bg, fontSize: 16, marginBottom: 4, textAlign: "center" }}>
           {result.name} · {result.qty} {t.sales.qty}
         </Text>
+        {result.receiptNumber ? (
+          <Text style={{ color: c.bgMuted, fontSize: 13, marginBottom: 8, textAlign: "center" }}>
+            Chek: {result.receiptNumber}
+          </Text>
+        ) : null}
         <Text style={{ color: "#fff", fontSize: 36, fontWeight: "800", marginBottom: 40 }}>
           {result.totalAmount.toLocaleString()} so'm
         </Text>

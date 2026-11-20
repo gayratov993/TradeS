@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 128" role="img" aria-label="Savdo Go">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0B1220"/>
+      <stop offset="1" stop-color="#16263D"/>
+    </linearGradient>
+    <linearGradient id="go" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#34D399"/>
+      <stop offset="1" stop-color="#2ECC71"/>
+    </linearGradient>
+  </defs>
+  <rect x="4" y="4" width="120" height="120" rx="30" fill="url(#bg)"/>
+  <rect x="5" y="5" width="118" height="118" rx="29" fill="none" stroke="#2ECC71" stroke-opacity=".45" stroke-width="2"/>
+  <text x="28" y="87" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="68" font-weight="800">S</text>
+  <path d="M71 64h27m-11-12 12 12-12 12" fill="none" stroke="url(#go)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="146" y="86" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="56" font-weight="800" letter-spacing="-1">Savdo</text>
+  <text x="306" y="86" fill="url(#go)" font-family="Arial, Helvetica, sans-serif" font-size="56" font-weight="800" letter-spacing="-1">Go</text>
+</svg>

@@ -17,13 +17,13 @@ export default {
           800: '#19673B',
           900: '#175433',
         },
-        // POS / SAVDO dark theme
+        // POS / SAVDO dark theme (RAOS-inspired)
         pos: {
-          bg:      '#0F172A',
-          card:    '#1E293B',
-          border:  '#334155',
-          accent:  '#22C55E',
-          accentHover: '#16A34A',
+          bg:      '#0B1220',
+          card:    '#111C2E',
+          border:  '#1E293B',
+          accent:  '#2ECC71',
+          accentHover: '#26A85D',
           text:    '#FFFFFF',
           muted:   '#94A3B8',
         },

@@ -1,6 +1,6 @@
 # Admin Panel — Modullar Hujjati
 
-Savdo-E Admin Panel mavjud barcha sahifalar va modullarning to'liq tavsifi.
+Savdo Go Admin Panel mavjud barcha sahifalar va modullarning to'liq tavsifi.
 
 ---
 
@@ -255,4 +255,4 @@ Joriy admin profili va shaxsiy ma'lumotlar.
 ---
 
 *Yozilgan sana: 2026-04-03*  
-*Loyiha: Savdo-E Admin Panel v1.0*
+*Loyiha: Savdo Go Admin Panel v1.0*

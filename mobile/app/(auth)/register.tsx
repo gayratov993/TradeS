@@ -102,7 +102,7 @@ export default function RegisterScreen() {
         {/* Brand header */}
         <View style={{ alignItems: "center", marginBottom: 24 }}>
           <Image source={require("@/assets/logo.png")} style={{ width: 80, height: 80, marginBottom: 10 }} resizeMode="contain" />
-          <Text style={{ fontSize: 26, fontWeight: "900", letterSpacing: -0.5, color: c.text }}>TradeS</Text>
+          <Text style={{ fontSize: 26, fontWeight: "900", letterSpacing: -0.5, color: c.text }}>Savdo Go</Text>
         </View>
 
         {/* ── STEP 1: FORM ── */}

@@ -1,11 +1,11 @@
 /**
- * Oflayn sync engine — TradeS backend bilan ikki xil pull manbasi ishlatiladi:
+ * Oflayn sync engine — Savdo Go backend bilan ikki xil pull manbasi ishlatiladi:
  *
  *   POST /sync/push  { operations: [...] } → mahalliy push (products + sales)
  *   GET  /sync/pull?lastSyncAt=<ISO>       → SALES pull (foydalanuvchi bo'yicha to'g'ri
  *                                            cheklangan — backend/src/services/sale.service.js
  *                                            ham xuddi shunday scoping ishlatadi, web bilan mos)
- *   GET  /products?limit=1000              → PRODUCTS pull — bu GLOBAL KATALOG endpoint'i
+ *   GET  /products?page=N&limit=500        → PRODUCTS pull — bu GLOBAL KATALOG endpoint'i
  *                                            (backend/src/services/product.service.js: "shared
  *                                            global catalog... No ownerId filter on reads").
  *
@@ -249,9 +249,18 @@ async function syncSales() {
  * bu yetarli va eng sodda yechim).
  */
 async function pullProductCatalog() {
-  const { data: body } = await api.get("/products", { params: { limit: 1000 } });
-  const payload = body?.data ?? body ?? {};
-  const remoteProducts: RemoteProduct[] = payload.products ?? [];
+  const remoteProducts: RemoteProduct[] = [];
+  let page = 1;
+  let totalPages = 1;
+
+  while (page <= totalPages && page <= 20) {
+    const { data: body } = await api.get("/products", { params: { page, limit: 500 } });
+    const payload = body?.data ?? body ?? {};
+    remoteProducts.push(...(payload.products ?? []));
+    totalPages = Number(payload.pages) || 1;
+    page += 1;
+  }
+
   if (remoteProducts.length === 0) return;
 
   const localByServerId = new Map(

@@ -46,8 +46,11 @@ api.interceptors.response.use(
         useAuthStore.getState().setToken(payload.accessToken, payload.refreshToken);
         original.headers.Authorization = `Bearer ${payload.accessToken}`;
         return api(original);
-      } catch {
-        useAuthStore.getState().clearToken();
+      } catch (refreshError: any) {
+        const status = refreshError?.response?.status;
+        if (status === 401 || status === 403) {
+          await useAuthStore.getState().handleAuthLost();
+        }
       }
     }
     return Promise.reject(error);

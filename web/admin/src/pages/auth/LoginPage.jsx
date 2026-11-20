@@ -49,9 +49,9 @@ export function LoginPage() {
         {/* Header */}
         <header className="flex flex-col items-center text-center w-full mb-section-gap">
           <div className="w-14 h-14 bg-surface-container-lowest border border-outline-variant rounded-lg flex items-center justify-center overflow-hidden mb-gutter shadow-sm">
-            <img src="/logo.png" alt="TradeS" className="w-full h-full object-contain p-1" />
+            <img src="/brand/savdo-go-icon.svg" alt="Savdo Go" className="w-full h-full object-contain p-1" />
           </div>
-          <h1 className="font-display-lg-mobile text-display-lg-mobile text-on-surface">TradeS Admin</h1>
+          <h1 className="font-display-lg-mobile text-display-lg-mobile text-on-surface">Savdo Go Admin</h1>
           <p className="font-body-sm text-body-sm text-on-surface-variant mt-2">
             Boshqaruv paneliga xush kelibsiz
           </p>

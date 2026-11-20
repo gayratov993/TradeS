@@ -1,4 +1,4 @@
-# Savdo-E — Hissa Qo'shish Yo'riqnomasi
+# Savdo Go — Hissa Qo'shish Yo'riqnomasi
 
 Loyihaga hissa qo'shishdan oldin ushbu qo'llanmani o'qib chiqing.
 
@@ -7,7 +7,7 @@ Loyihaga hissa qo'shishdan oldin ushbu qo'llanmani o'qib chiqing.
 ## Loyiha Tuzilishi
 
 ```
-Savdo-E/
+Savdo Go/
 ├── backend/        # Node.js + Express + MongoDB
 ├── web/            # React 18 (asosiy web platforma)
 │   └── admin/      # React 18 (admin panel)
@@ -21,8 +21,8 @@ Savdo-E/
 
 ### 1. Reponi fork qiling va clone qiling
 ```bash
-git clone https://github.com/your-username/savdo-e.git
-cd savdo-e
+git clone https://github.com/gayratov993/savdo-go.git
+cd savdo-go
 ```
 
 ### 2. Branch yarating
@@ -157,4 +157,4 @@ GitHub Issues'da yangi issue oching va quyidagilarni kiriting:
 
 ---
 
-*Savdo-E jamoasi bilan ishlashdan xursandmiz!*
+*Savdo Go jamoasi bilan ishlashdan xursandmiz!*

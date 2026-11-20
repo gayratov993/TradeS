@@ -17,7 +17,7 @@ Ushbu hujjat loyihamizning asosiy g'oyasi, uning maqsadlari hamda unga mos brend
 
 ## 💡 1. Startup haqida (About the Startup)
 
-**Savdo-E (vaqtincha)** — bu kichik va o'rta tadbirkorlar (do'konlar, chakana savdo nuqtalari, xizmat ko'rsatish shoxobchalari) uchun mo'ljallangan **savdo, POS (Point of Sale) va ombor boshqaruvi platformasi**.
+**Savdo Go (vaqtincha)** — bu kichik va o'rta tadbirkorlar (do'konlar, chakana savdo nuqtalari, xizmat ko'rsatish shoxobchalari) uchun mo'ljallangan **savdo, POS (Point of Sale) va ombor boshqaruvi platformasi**.
 
 ### 🌟 Asosiy farq va afzalliklari (USP):
 1. **Offline-First POS**: Internet butunlay o'chib qolganda ham sotuvlar to'xtamaydi. Ma'lumotlar mahalliy bazada saqlanadi va tarmoq tiklanganda bulut (cloud) bilan sinxronlashadi.
@@ -49,7 +49,7 @@ Loyiha nomi qisqa, jarangdor, oson eslab qolinadigan va o'zbek bozori hamda xalq
 | 1 | **SavdoFlow** | Savdoning silliq va to'xtovsiz harakatlanishini anglatadi (Flow - oqim). |
 | 2 | **POSim** | "Mening POS tizimim" so'zidan. Kichik biznes uchun samimiy va yaqin nom. |
 | 3 | **SmartSavdo** | Aqlli va tahliliy savdo tizimi. AI integratsiyasiga urg'u beradi. |
-| 4 | **Savdo-E** | Hozirgi ishchi nom. E-Commerce va Elektron savdoni ifodalaydi. |
+| 4 | **Savdo Go** | Hozirgi ishchi nom. E-Commerce va Elektron savdoni ifodalaydi. |
 | 5 | **BozorApp** | O'zbek xalqi uchun juda tanish va sodda nom. Do'kon egalari uchun yaqin. |
 | 6 | **Tijorat.ai** | Professional va jiddiyroq nom, asosan AI imkoniyatlariga yo'naltirilgan. |
 | 7 | **Daftar.uz** (yoki **E-Daftar**) | Eski "savdo daftari"ni zamonaviy raqamli daftar bilan almashtirish ramzi. |

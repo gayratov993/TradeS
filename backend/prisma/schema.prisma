@@ -395,19 +395,23 @@ model SupportMessage {
 }
 
 model AuditLog {
-  id        String   @id @default(cuid())
-  action    String
-  category  String   @default("user")
-  actor     String   @default("")
-  actorId   String?
-  target    String   @default("")
-  targetId  String?
-  ip        String   @default("")
-  metadata  Json?
-  createdAt DateTime @default(now())
+  id             String   @id @default(cuid())
+  action         String
+  category       String   @default("user")
+  actor          String   @default("")
+  actorId        String?
+  organizationId String?
+  storeId        String?
+  target         String   @default("")
+  targetId       String?
+  ip             String   @default("")
+  metadata       Json?
+  createdAt      DateTime @default(now())
 
   @@index([category, createdAt])
   @@index([actorId])
+  @@index([organizationId, createdAt])
+  @@index([storeId, createdAt])
 }
 
 model Wishlist {
@@ -468,6 +472,7 @@ model Plan {
   maxStores            Int
   maxRegistersPerStore Int
   maxUsers             Int
+  maxCashiers          Int            @default(0)
   description          String         @default("")
   isActive             Boolean        @default(true)
   organizations        Organization[]

@@ -2,6 +2,7 @@
 // Uzbek design label (Stitch). Order follows the approved dashboard design.
 const sidebarMenu = [
   { key: "dashboard", path: "/dashboard", icon: "dashboard",     label: "Boshqaruv paneli" },
+  { key: "customers", path: "/customers", icon: "business",      label: "Mijozlar va tariflar" },
   { key: "products",  path: "/products",  icon: "inventory_2",   label: "Mahsulotlar" },
   { key: "orders",    path: "/orders",    icon: "shopping_cart", label: "Buyurtmalar" },
   { key: "reports",   path: "/reports",   icon: "payments",      label: "Sotuvlar" },

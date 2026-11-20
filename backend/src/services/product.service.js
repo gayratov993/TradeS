@@ -4,6 +4,11 @@ const slugify = require('slugify');
 const { clampLimit } = require('../utils/pagination');
 const { assertTestUserWithinLimits } = require('../utils/testUserLimits');
 
+const productWriteWhere = (id, userId, options) =>
+  options?.isAdmin === true
+    ? { id, isActive: true }
+    : { id, isActive: true, ownerId: userId };
+
 const getProducts = async (userId, queryParams = {}, options = {}) => {
   const { search, page = 1, limit = 50, sortBy = 'createdAt', order = 'desc' } = queryParams;
 
@@ -15,7 +20,7 @@ const getProducts = async (userId, queryParams = {}, options = {}) => {
     where.name = { contains: search, mode: 'insensitive' };
   }
 
-  const take = clampLimit(limit, 50);
+  const take = clampLimit(limit, 50, 1000);
   const skip = (Number(page) - 1) * take;
   const sortField = sortBy === 'name' ? 'name' : 'createdAt';
 
@@ -96,7 +101,7 @@ const createProduct = async (productData, userId) => {
 };
 
 const updateProduct = async (id, userId, updateData, options = {}) => {
-  const where = { id, isActive: true };
+  const where = productWriteWhere(id, userId, options);
 
   const product = await prisma.product.findFirst({ where });
   if (!product) throw new ApiError(404, 'Product not found');
@@ -140,7 +145,7 @@ const updateProduct = async (id, userId, updateData, options = {}) => {
 };
 
 const restockProduct = async (id, userId, quantity, options = {}) => {
-  const where = { id, isActive: true };
+  const where = productWriteWhere(id, userId, options);
 
   const product = await prisma.product.findFirst({ where });
   if (!product) throw new ApiError(404, 'Product not found');
@@ -160,7 +165,7 @@ const restockProduct = async (id, userId, quantity, options = {}) => {
 };
 
 const deleteProduct = async (id, userId, options = {}) => {
-  const where = { id, isActive: true };
+  const where = productWriteWhere(id, userId, options);
 
   const product = await prisma.product.findFirst({ where });
   if (!product) throw new ApiError(404, 'Product not found');

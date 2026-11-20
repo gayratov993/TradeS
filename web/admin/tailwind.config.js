@@ -4,7 +4,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        // ── TradeS Stitch design tokens (light) ──────────────
+        // ── Savdo Go Stitch design tokens (light) ──────────────
         primary: {
           DEFAULT: "#006c49",
           dark: "#005236",

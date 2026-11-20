@@ -1,4 +1,4 @@
-Security audit summary — Savdo-E
+Security audit summary — Savdo Go
 
 Date: 2026-06-12
 

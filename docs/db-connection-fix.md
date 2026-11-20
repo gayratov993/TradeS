@@ -1,4 +1,4 @@
-# 🔌 Database Connection Troubleshooting — Savdo-E
+# 🔌 Database Connection Troubleshooting — Savdo Go
 **Error:** `Can't reach database server at ep-curly-sun-ap4bvxh9.c-7.us-east-1.aws.neon.tech:5432`
 
 ## 🔍 Muammoning sababi
@@ -36,4 +36,4 @@ Agar yuqoridagilar yordam bermasa:
 ## 📌 Xulosa
 Agar xatolik takrorlansa, birinchi navbatda **Neon Console $\rightarrow$ IP Allowlist** bo'limini tekshiring. Bu 90% holatlarda muammoni hal qiladi.
 
-*Documented by Claude Code for the Savdo-E project.*
+*Documented by Claude Code for the Savdo Go project.*

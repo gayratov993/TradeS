@@ -1,11 +1,11 @@
-# Savdo-E Architecture
+# Savdo Go Architecture
 
 ## System Overview
 
 Monorepo with three clients sharing a single backend API:
 
 ```
-Savdo-E/
+Savdo Go/
 ├── backend/          Node.js + Express + MongoDB
 ├── web/              React 18 + Vite + Zustand + Tailwind CSS
 │   └── admin/        Separate admin scaffold (merged into web/src)

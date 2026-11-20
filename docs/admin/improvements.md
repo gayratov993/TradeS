@@ -428,5 +428,5 @@ Hozir sof CSS ishlatiladi. Quyidagilarni qo'shish mumkin:
 ---
 
 *Yozilgan sana: 2026-03-30*
-*Loyiha: Savdo-E Admin Panel*
+*Loyiha: Savdo Go Admin Panel*
 *Texnologiya: React 18 + Vite + CSS + Context API + MongoDB*

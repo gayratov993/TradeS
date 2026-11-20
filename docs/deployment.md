@@ -1,4 +1,4 @@
-# Savdo-E — Deploy Qilish Yo'riqnomasi
+# Savdo Go — Deploy Qilish Yo'riqnomasi
 
 Loyihaning uchta qismini (Backend, Web, Admin Panel) production muhitiga deploy qilish bo'yicha to'liq qo'llanma.
 
@@ -32,7 +32,7 @@ JWT_ACCESS_SECRET=min_32_characters_random_string
 JWT_REFRESH_SECRET=min_32_characters_random_string
 GEMINI_API_KEY=AIzaSy...
 CLOUDINARY_URL=cloudinary://api_key:api_secret@cloud_name
-CORS_ORIGIN=https://savdo-e.vercel.app,https://admin.savdo-e.vercel.app
+CORS_ORIGIN=https://savdo-go.vercel.app,https://admin.savdo-go.vercel.app
 ```
 
 ### Render orqali
@@ -146,7 +146,7 @@ mongodb+srv://username:password@cluster0.xxxxx.mongodb.net/savdo_db?retryWrites=
 
 ### Vercel'da custom domen
 1. Vercel Project → **Settings** → **Domains**
-2. Domeningizni kiriting: `admin.savdo-e.uz`
+2. Domeningizni kiriting: `admin.savdogo.example`
 3. DNS provider'da CNAME yozing:
    ```
    CNAME  admin  cname.vercel-dns.com
@@ -154,7 +154,7 @@ mongodb+srv://username:password@cluster0.xxxxx.mongodb.net/savdo_db?retryWrites=
 
 ### Backend uchun (Railway)
 1. Railway → Project → **Settings** → **Domains**
-2. Custom domen qo'shing: `api.savdo-e.uz`
+2. Custom domen qo'shing: `api.savdogo.example`
 
 ---
 
@@ -171,4 +171,4 @@ mongodb+srv://username:password@cluster0.xxxxx.mongodb.net/savdo_db?retryWrites=
 ---
 
 *Yozilgan sana: 2026-04-03*  
-*Loyiha: Savdo-E*
+*Loyiha: Savdo Go*

@@ -1,5 +1,5 @@
 import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
-import { Home, Package, ShoppingCart, BarChart2, Settings, User, ShieldCheck, LogOut } from 'lucide-react';
+import { Home, Package, ShoppingCart, BarChart2, Settings, User, ShieldCheck, LogOut, CreditCard } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import useAuthStore from '../../store/authStore';
 import TestUserBanner from '../common/TestUserBanner';
@@ -63,6 +63,7 @@ export default function AppLayout() {
     { to: '/dashboard/sales',    label: t('sales'),     icon: ShoppingCart },
     { to: '/dashboard/reports',  label: t('reports'),   icon: BarChart2 },
     { to: '/dashboard/settings', label: t('settings'),  icon: Settings },
+    { to: '/dashboard/subscription', label: 'Mening tarifim', icon: CreditCard },
     { to: '/dashboard/profile',  label: t('profile'),   icon: User },
   ];
 
@@ -78,10 +79,10 @@ export default function AppLayout() {
       <aside className="hidden md:flex flex-col w-[220px] min-h-screen bg-white dark:bg-[#1E293B] border-r border-[#E2E8F0] dark:border-[#334155] fixed left-0 top-0 bottom-0 z-30">
         {/* Logo */}
         <div className="px-5 py-6 border-b border-[#E2E8F0] dark:border-[#334155] flex items-center gap-2.5">
-          <img src="/logo.png" alt="TradeS" className="h-10 w-10 rounded-lg object-contain flex-shrink-0 dark:hidden" />
-          <img src="/logo-dark.png" alt="TradeS" className="hidden h-10 w-10 rounded-lg object-contain flex-shrink-0 dark:block" />
+          <img src="/brand/savdo-go-icon.svg" alt="Savdo Go" className="h-10 w-10 rounded-lg object-contain flex-shrink-0 dark:hidden" />
+          <img src="/brand/savdo-go-icon.svg" alt="Savdo Go" className="hidden h-10 w-10 rounded-lg object-contain flex-shrink-0 dark:block" />
           <div className="min-w-0">
-            <span className="text-2xl font-extrabold text-green-500 tracking-tight">TradeS</span>
+            <span className="text-2xl font-extrabold text-green-500 tracking-tight">Savdo Go</span>
             <p className="text-[11px] text-slate-400 font-medium mt-0.5">Business Manager</p>
           </div>
         </div>
@@ -140,6 +141,10 @@ export default function AppLayout() {
 
       {/* ── Main content ─────────────────────────── */}
       <main className="flex-1 md:ml-[220px] pb-20 md:pb-0">
+        <div className="md:hidden flex items-center gap-2 px-4 py-3 bg-white dark:bg-[#1E293B] border-b border-[#E2E8F0] dark:border-[#334155]">
+          <img src="/brand/savdo-go-icon.svg" alt="Savdo Go" className="h-8 w-8 rounded-lg object-contain" />
+          <span className="text-lg font-extrabold text-green-500 tracking-tight">Savdo Go</span>
+        </div>
         <TestUserBanner key={location.pathname} user={user} />
         <Outlet />
       </main>

@@ -1,4 +1,4 @@
-# Savdo-E API Documentation
+# Savdo Go API Documentation
 
 **Base URL:** `http://localhost:5000/api/v1`
 

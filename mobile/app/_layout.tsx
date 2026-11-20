@@ -8,7 +8,7 @@ import { useLangStore } from "@/store/langStore";
 import { useThemeStore } from "@/store/themeStore";
 import { useSubscriptionStore } from "@/store/subscriptionStore";
 import { useRoleStore } from "@/store/roleStore";
-import { runSync } from "@/services/syncEngine";
+import { clearLocalData, runSync } from "@/services/syncEngine";
 import { loadDeviceId } from "@/utils/deviceId";
 import "../global.css";
 
@@ -40,6 +40,13 @@ export default function RootLayout() {
       router.replace("/(auth)/login");
     }
   }, [token, ready]);
+
+  useEffect(() => {
+    const unsubscribe = useAuthStore.getState().onAuthLost(() => {
+      clearLocalData().catch(() => {});
+    });
+    return unsubscribe;
+  }, []);
 
   useEffect(() => {
     if (!token || token === "demo-token") return;

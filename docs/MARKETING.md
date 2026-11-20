@@ -1,4 +1,4 @@
-# 📢 Savdo-E — Marketing Broşyura
+# 📢 Savdo Go — Marketing Broşyura
 
 > **Bir vaqtda Savdo, POS va Ombor Boshqaruvi — MDH (Markaziy Osiyo) tadbirkorlari uchun yaratilgan platforma.**
 
@@ -6,7 +6,7 @@
 
 ## 🎯 1. Biz kimmiz?
 
-**Savdo-E** — bu kichik va o'rta tadbirkorlar (do'konlar, chakana savdo nuqtalari, xizmat ko'rsatish shoxobchalari) uchun mo'ljallangan **savdo, POS (Point of Sale) va ombor boshqaruvi platformasi**. AI-texnologiyalar bilan qurollangan bo'lib, 830,000+ MDH (Markaziy Osiyo) tadbirkorlariga xizmat ko'rsatishga qaratilgan.
+**Savdo Go** — bu kichik va o'rta tadbirkorlar (do'konlar, chakana savdo nuqtalari, xizmat ko'rsatish shoxobchalari) uchun mo'ljallangan **savdo, POS (Point of Sale) va ombor boshqaruvi platformasi**. AI-texnologiyalar bilan qurollangan bo'lib, 830,000+ MDH (Markaziy Osiyo) tadbirkorlariga xizmat ko'rsatishga qaratilgan.
 
 ### 🌟 Nima uchun bizni tanlashadi?
 
@@ -23,7 +23,7 @@
 
 ### ❌ Muammolar:
 
-| Muammo | Yechim (Savdo-E) |
+| Muammo | Yechim (Savdo Go) |
 |--------|------------------|
 | Tadbirkorlar savdoni daftarga yoki Telegram guruhlarga yozadi — tartibsizlik, yo'qotishlar | Bulutli platforma — barcha ma'lumot bir joyda, xavfsiz |
 | Mavjud tizimlar (1C, Jowi) juda qimmat va murakkab | Bepul boshlang'ich tarif, sodda interfeys, 1 daqiqada tushuniladi |
@@ -193,9 +193,9 @@
 
 | Tarif | Narx | Imkoniyatlar |
 |-------|------|--------------|
-| **FREE** | 0 so'm/oy | 1 do'kon, 100 ta mahsulotgacha, asosiy hisobot |
-| **STANDARD** | 99,000 so'm/oy | 5 do'kongacha, 1000 mahsulot, AI tahlil, eksport |
-| **PRO** | 299,000 so'm/oy | Cheksiz do'kon, AI tavsiyalar, API, integratsiyalar |
+| **Starter (`BASIC`)** | 249,000 so'm/oy | 1 filial, 3 kassirgacha, oflayn kassa, Soliq.uz, Telegram hisobot |
+| **Growth (`STANDARD`)** | 449,000 so'm/oy | 3 filialgacha, 10 kassirgacha, AI hisobot, chegirma, API |
+| **Pro (`PRO`)** | 799,000 so'm/oy | Cheksiz filial/kassir, to‘liq API, shaxsiy menejer, priority support |
 
 > *Aniq narxlar bozorga qarab sozlash mumkin.*
 
@@ -251,9 +251,9 @@
 
 ---
 
-## 🏆 12. Nima uchun Savdo-E?
+## 🏆 12. Nima uchun Savdo Go?
 
-| Xususiyat | Savdo-E | Boshqa tizimlar |
+| Xususiyat | Savdo Go | Boshqa tizimlar |
 |-----------|---------|-----------------|
 | **Narxi** | Bepul boshlang'ich | Qimmat ($100+/oy) |
 | **O'rnatish** | 1 daqiqada | Bir necha kun |
@@ -269,7 +269,7 @@
 ## 🌍 13. Brend va Logotip
 
 ### Ism variantlari:
-1. **Savdo-E** — E-Commerce va Elektron savdoni anglatadi
+1. **Savdo Go** — E-Commerce va Elektron savdoni anglatadi
 2. **SavdoFlow** — Savdoning uzluksiz oqimi
 3. **POSim** — "Mening POS tizimim"
 4. **SmartSavdo** — Aqlli savdo tizimi
@@ -309,8 +309,8 @@
 
 ## 📞 15. Bog'lanish
 
-- 🌐 **Veb-sayt:** [savdo-e.uz](https://savdo-e.uz)
-- 📧 **Email:** info@savdo-e.uz
+- 🌐 **Veb-sayt:** [savdogo.example](https://savdogo.example)
+- 📧 **Email:** info@savdogo.example
 - 💬 **Telegram:** @savdo_e_support
 - 📱 **Telefon:** +998 71 200-XX-XX
 - 🏢 **Manzil:** Toshkent, O'zbekiston
@@ -319,7 +319,7 @@
 
 ## 🎬 16. Xulosa
 
-**Savdo-E** — bu oddiy daftardan to'liq raqamli ekosistema o'tish uchun yagona platforma. Biz MDH tadbirkorlariga:
+**Savdo Go** — bu oddiy daftardan to'liq raqamli ekosistema o'tish uchun yagona platforma. Biz MDH tadbirkorlariga:
 - 💰 Pulni tejash
 - ⏱ Vaqtni tejash
 - 📊 Biznesni yaxshiroq tushunish
@@ -327,7 +327,7 @@
 
 imkonini beramiz.
 
-> **"Savdo-E — Savdo boshqaruvi sodda qilindi."**
+> **"Savdo Go — Savdo boshqaruvi sodda qilindi."**
 
 ---
 
@@ -337,6 +337,6 @@ MIT Litsenziya — erkin foydalanish, tijorat loyihalari uchun ham.
 
 ---
 
-**Savdo-E — MDH Tadbirkorlari Uchun Savdo Boshqaruvi Tizimi 🚀**
+**Savdo Go — MDH Tadbirkorlari Uchun Savdo Boshqaruvi Tizimi 🚀**
 
 *Yaratilgan: 2026 • Hozir: Faol rivojlanishda*
