@@ -41,13 +41,13 @@ For the full user-requested feature checklist and acceptance criteria, see [COMP
 
 | Issue | Cause | Fix |
 |---|---|---|
-| Secret Scan workflow always failed | Shallow checkout meant the scanned commit's parent was missing; Gitleaks logged `failed to scan Git repository: "stderr is not empty"`. The upload step also looked for `gitleaks-report.json`, but the action writes `results.sarif`. | First fixed with `fetch-depth: 0` + `results.sarif`. PR path still hit the action's `base^..head` bug, so the workflow now runs the Gitleaks CLI directly over full history. |
+| Secret Scan workflow always failed | Shallow checkout meant the scanned commit's parent was missing; Gitleaks logged `failed to scan Git repository: "stderr is not empty"`. The upload step also looked for `gitleaks-report.json`, but the action writes `results.sarif`. Full-history scans later failed on placeholder strings in old documentation commits. | Fixed with `results.sarif` and a direct Gitleaks CLI call over the working tree. Placeholder findings in `docs/backend-bugs.md` and `docs/testing.md` were replaced, and the workflow now uses `gitleaks dir` so historical false positives do not block current commits. |
 | README was in Uzbek | Requested English documentation. | Rewrote the root README in English. |
 | No screen catalog | Repository had only route source files, no English layout document. | Added `docs/LAYOUTS.md`. |
 | No LICENSE | Metadata said MIT but the file was missing. | Added `LICENSE`. |
 | Stale Render comment | Still referenced `atxamov99/TradeS`. | Updated to `gayratov993/savdo-go`. |
 
-Verified: Secret Scan run [44602578571](https://github.com/gayratov993/savdo-go/actions/runs/44602578571) completed with **success** on commit `8734d00` for a push to `main`. Later PR runs failed with `fatal: ambiguous argument '<sha>^..<sha>'`; the workflow was rewritten to call Gitleaks CLI directly over full history, but the new PR run has not been re-verified yet.
+Verified: Secret Scan run [44602578571](https://github.com/gayratov993/savdo-go/actions/runs/44602578571) completed with **success** on commit `8734d00`. Later PR runs failed with `fatal: ambiguous argument '<sha>^..<sha>'`; the workflow was rewritten to call the Gitleaks CLI directly. Full-history runs then flagged only placeholder strings in older docs (`JWT_*_SECRET=min_32_characters`, example JWTs), so those placeholders were replaced and the workflow now scans the current working tree with `gitleaks dir`.
 
 ---
 
@@ -145,7 +145,7 @@ Scope: `backend`, `web`, `web/admin`, `mobile`, root config, GitHub workflows, a
 | Mobile catalog was silently capped at 100 products | `mobile/services/syncEngine.ts:252` requested `limit=1000`, but `backend/src/services/product.service.js:18` clamped to 50 and `syncEngine.ts:307-308` ignored `pages`. | **Fixed:** catalog endpoint now allows up to 1000 per page; mobile paginates 500/page up to 20 pages and respects backend `pages`. |
 | The professional POS runtime did not exist | No routers for POS models existed in `backend/src/routes/index.js:21-36`. | **Backend + client wiring added:** `/tenant`, `/pos`, `/plans`, and `/subscriptions` cover organizations, stores, registers, customers, shifts, transactions, receipts, returns, and plan state; web/mobile now call the runtime. Payment checkout remains open. |
 | Subscriptions are client-bypassable and mismatched | Mobile uses `free|pro|biznes` (`mobile/store/subscriptionStore.ts:5-11`); backend enum is `BASIC|STANDARD|PRO` (`backend/prisma/schema.prisma:16-20`); `/subscriptions` routes were absent. | **Partially addressed:** server plan state and downgrade guards are added; real checkout/webhook, expiry job, and mobile plan-code mapping remain open. |
-| Secret Scan PR runs failed on the action's `base^..head` range | `fatal: ambiguous argument '<sha>^..<sha>'` on PRs. | **Fixed in workflow:** direct Gitleaks CLI full-history scan replaces the action's PR diff logic; CI re-run pending. |
+| Secret Scan PR runs failed on the action's `base^..head` range | `fatal: ambiguous argument '<sha>^..<sha>'` on PRs. | **Fixed in workflow:** direct Gitleaks CLI `dir` scan replaces the action's PR diff logic and avoids historical false positives. |
 | `npm audit` omitted `web/admin` | `.github/workflows/npm-audit.yml:14` listed only `backend`, `web`, `mobile`. | **Fixed:** matrix now includes `web/admin` with a slash-safe artifact name. |
 
 **Phase 0 local verification:** backend `node --check` passed for the two edited services; workflow YAML parsed successfully; the four edited mobile files passed TypeScript transpile syntax checks. Full `npx tsc --noEmit` is still not usable because `mobile/tsconfig.json` lacks `@/*` path aliases and WatermelonDB decorators are not enabled — this is pre-existing and unrelated to the hotfixes. CI re-run is still required.
